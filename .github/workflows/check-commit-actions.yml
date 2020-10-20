@@ -26,5 +26,5 @@ jobs:
         shell: bash -l {0}
         run: conda install -c conda-forge -c defaults -c anaconda -c cadquery mypy pytest
       - name: Run pytest
-        shell: bash
-        run: pytest -v
+        shell: bash -l {0}
+        run: conda info
