@@ -24,7 +24,7 @@ jobs:
           python-version: 3.8
       - name: Install CadQuery
         shell: bash -l {0}
-        run: conda install -c conda-forge -c defaults -c anaconda -c cadquery
+        run: conda install -c cadquery -c conda-forge cadquery=master
       - name: Get conda info
         shell: bash -l {0}
         run: conda info
