@@ -23,6 +23,7 @@ jobs:
           auto-update-conda: true
           python-version: 3.8
       - run: conda init bash
+      - run: source .bashrc
       - run: conda create -n cadquery
       - run: conda activate cadquery
       - run: conda info
