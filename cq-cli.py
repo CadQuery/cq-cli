@@ -192,7 +192,7 @@ def main():
     # Build, parse and let the selected codec convert the CQ output
     try:
         # Use the codec plugin to do the conversion
-        converted = codec_module.convert(build_result)
+        converted = codec_module.convert(build_result, outfile, errfile)
 
         # If converted is None, assume that the output was written to file directly by the codec
         if converted != None:
