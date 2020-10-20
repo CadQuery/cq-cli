@@ -1,5 +1,7 @@
 # cq-cli
 
+![check-commit](https://github.com/CadQuery/cq-cli/workflows/check-commit/badge.svg)
+
 ## Contents
 
 * [Introduction](https://github.com/CadQuery/cq-cli#introduction)
