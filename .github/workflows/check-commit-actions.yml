@@ -21,8 +21,7 @@ jobs:
       - run: bash miniconda.sh -b -p $HOME/miniconda;
       - run: export PATH="$HOME/miniconda/bin:$HOME/miniconda/lib:$PATH";
       - run: conda config --set always_yes yes --set changeps1 no;
-      - run: conda create -n cadquery
-      - run: source ~/miniconda/bin/activate cadquery
+      - run: source ~/miniconda/bin/activate base
       - run: conda install -c conda-forge -c defaults -c cadquery python=3.8 mypy
       - run: conda install pytest
       - run: pytest -v
