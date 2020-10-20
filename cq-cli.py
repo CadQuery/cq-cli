@@ -7,7 +7,6 @@ from cadquery import cqgi
 import fileinput
 import traceback
 from cqcodecs import loader
-from cqcodecs import *
 
 def build_and_parse(script_str, params, errfile):
     """
