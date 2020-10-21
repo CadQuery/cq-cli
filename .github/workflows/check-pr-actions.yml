@@ -40,12 +40,6 @@ jobs:
         with:
           auto-update-conda: true
           python-version: 3.8
-      - name: Init conda
-        shell: zsh --login {0}
-        run: conda init zsh
-      - name: Swtich to test environment
-        shell: zsh --login {0}
-        run: conda activate test
       - name: Install CadQuery
         shell: zsh --login {0}
         run: conda install -c cadquery -c conda-forge cadquery=master
