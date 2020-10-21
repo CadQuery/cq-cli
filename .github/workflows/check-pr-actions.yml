@@ -41,14 +41,14 @@ jobs:
           auto-update-conda: true
           python-version: 3.8
       - name: Install CadQuery
-        shell: zsh --login {0}
+        shell: bash --login {0}
         run: conda install -c cadquery -c conda-forge cadquery=master
       - name: Get conda info
-        shell: zsh --login {0}
+        shell: bash --login {0}
         run: conda info
       - name: Install pytest
-        shell: zsh --login {0}
+        shell: bash --login {0}
         run: pip install pytest
       - name: Run pytest
-        shell: zsh --login {0}
+        shell: bash --login {0}
         run: pytest -v
