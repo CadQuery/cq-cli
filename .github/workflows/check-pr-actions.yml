@@ -12,19 +12,43 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
       - uses: conda-incubator/setup-miniconda@v1
         with:
           auto-update-conda: true
           python-version: 3.8
       - name: Install CadQuery
-        shell: bash -l {0}
+        shell: bash --login {0}
         run: conda install -c cadquery -c conda-forge cadquery=master
       - name: Get conda info
-        shell: bash -l {0}
+        shell: bash --login {0}
         run: conda info
       - name: Install pytest
-        shell: bash -l {0}
+        shell: bash --login {0}
         run: pip install pytest
       - name: Run pytest
-        shell: bash -l {0}
+        shell: bash --login {0}
+        run: pytest -v
+  run-pytest-macos:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+      - uses: conda-incubator/setup-miniconda@v1
+        with:
+          auto-update-conda: true
+          python-version: 3.8
+      - name: Install CadQuery
+        shell: bash --login {0}
+        run: conda install -c cadquery -c conda-forge cadquery=master
+      - name: Get conda info
+        shell: bash --login {0}
+        run: conda info
+      - name: Install pytest
+        shell: bash --login {0}
+        run: pip install pytest
+      - name: Run pytest
+        shell: bash --login {0}
         run: pytest -v
