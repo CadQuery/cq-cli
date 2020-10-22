@@ -52,3 +52,21 @@ jobs:
       - name: Run pytest
         shell: bash --login {0}
         run: pytest -v
+  run-pytest-win:
+    runs-on: "windows-latest"
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+      - uses: conda-incubator/setup-miniconda@v1
+        with:
+          miniconda-version: "latest"
+          python-version: 3.8
+          activate-environment: test
+      - name: Install CadQuery
+        shell: pwsh
+        run: |
+          conda install -c cadquery -c conda-forge cadquery=master
+          conda info
+          conda install -c anaconda pytest
+          pytest -v

@@ -6,7 +6,7 @@ def test_no_cli_arguments():
     """
     Runs the CLI with no arguments, which you should not do unless you want the usage message.
     """
-    command = ["./cq-cli.py"]
+    command = ["python", "cq-cli.py"]
     out, err, exitcode = helpers.cli_call(command)
 
     assert err.decode().split('\n')[0].startswith("usage")
@@ -17,7 +17,7 @@ def test_codec_and_infile_arguments_file_nonexistent():
     """
     test_file = helpers.get_test_file_location("noexist.py")
 
-    command = ["./cq-cli.py", "--codec", "step", "--infile", test_file]
+    command = ["python", "cq-cli.py", "--codec", "step", "--infile", test_file]
     out, err, exitcode = helpers.cli_call(command)
 
     assert err.decode().startswith("infile does not exist.")
@@ -28,10 +28,10 @@ def test_codec_and_infile_arguments():
     """
     test_file = helpers.get_test_file_location("cube.py")
 
-    command = ["./cq-cli.py", "--codec", "step", "--infile", test_file]
+    command = ["python", "cq-cli.py", "--codec", "step", "--infile", test_file]
     out, err, exitcode = helpers.cli_call(command)
 
-    assert out.decode().split('\n')[9] == "ISO-10303-21;"
+    assert out.decode().split('\n')[9].replace('\r', '') == "ISO-10303-21;"
 
 def test_codec_infile_and_outfile_arguments():
     """
@@ -43,7 +43,7 @@ def test_codec_infile_and_outfile_arguments():
     temp_dir = tempfile.gettempdir()
     temp_file = os.path.join(temp_dir, "temp_test_4.step")
 
-    command = ["./cq-cli.py", "--codec", "step", "--infile", test_file, '--outfile', temp_file]
+    command = ["python", "cq-cli.py", "--codec", "step", "--infile", test_file, '--outfile', temp_file]
     out, err, exitcode = helpers.cli_call(command)
 
     # Read the STEP output back from the outfile
@@ -64,7 +64,7 @@ def test_codec_infile_outfile_errfile_arguments():
     temp_file = os.path.join(temp_dir, "temp_test_5.step")
     err_file = os.path.join(temp_dir, "temp_test_5_error.txt")
 
-    command = ["./cq-cli.py", "--codec", "step", "--infile", test_file, '--outfile', temp_file, '--errfile', err_file]
+    command = ["python", "cq-cli.py", "--codec", "step", "--infile", test_file, '--outfile', temp_file, '--errfile', err_file]
     out, err, exitcode = helpers.cli_call(command)
 
     # Read the error back from the errfile

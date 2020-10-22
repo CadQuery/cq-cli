@@ -6,7 +6,7 @@ def test_stl_codec():
     """
     test_file = helpers.get_test_file_location("cube.py")
 
-    command = ["./cq-cli.py", "--codec", "stl", "--infile", test_file]
+    command = ["python", "cq-cli.py", "--codec", "stl", "--infile", test_file]
     out, err, exitcode = helpers.cli_call(command)
 
-    assert out.decode().split('\n')[0] == "solid "
+    assert out.decode().split('\n')[0].replace('\r', '') == "solid "
