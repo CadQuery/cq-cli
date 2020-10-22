@@ -61,6 +61,7 @@ jobs:
       - uses: conda-incubator/setup-miniconda@v1
         with:
           miniconda-version: "latest"
+          python-version: 3.8
           activate-environment: test
       - name: Install CadQuery
         shell: pwsh
