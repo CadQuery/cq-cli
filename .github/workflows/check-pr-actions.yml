@@ -52,3 +52,17 @@ jobs:
       - name: Run pytest
         shell: bash --login {0}
         run: pytest -v
+  run-pytest-win:
+    runs-on: "windows-latest"
+    steps:
+      - uses: conda-incubator/setup-miniconda@v1
+        with:
+          miniconda-version: "latest"
+          activate-environment: test
+      - name: Install CadQuery
+        shell: pwsh
+        run: |
+          conda install -c cadquery -c conda-forge cadquery=master
+          conda info
+          pip install pytest
+          pytest -v
