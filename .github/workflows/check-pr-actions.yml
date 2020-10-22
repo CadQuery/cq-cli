@@ -55,6 +55,9 @@ jobs:
   run-pytest-win:
     runs-on: "windows-latest"
     steps:
+      - uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
       - uses: conda-incubator/setup-miniconda@v1
         with:
           miniconda-version: "latest"
