@@ -68,5 +68,5 @@ jobs:
         run: |
           conda install -c cadquery -c conda-forge cadquery=master
           conda info
-          pip install pytest
+          conda install -c anaconda pytest
           pytest -v
