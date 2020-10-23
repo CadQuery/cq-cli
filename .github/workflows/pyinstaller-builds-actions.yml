@@ -32,31 +32,31 @@ jobs:
       with:
         name: cq-cli-Linux-x86_64
         path: dist
-    build-macos:
-      runs-on: macos-latest
-      steps:
-      - uses: actions/checkout@v2
-      - uses: conda-incubator/setup-miniconda@v1
-        with:
-          miniconda-version: "latest"
-          python-version: 3.8
-          activate-environment: test
-      - name: Install CadQuery and pyinstaller
-        shell: bash --login {0}
-        run: |
-          conda info
-          conda install -c cadquery -c conda-forge cadquery=master
-          conda install -c conda-forge pyinstaller
-          pip install path
-      - name: Run build
-        shell: bash --login {0}
-        run: |
-          conda info
-          pyinstaller cq-cli_pyinstaller.spec ${{ github.event.inputs.type }}
-      - uses: actions/upload-artifact@v2
-        with:
-          name: cq-cli-MacOS
-          path: dist
+  build-macos:
+    runs-on: macos-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: conda-incubator/setup-miniconda@v1
+      with:
+        miniconda-version: "latest"
+        python-version: 3.8
+        activate-environment: test
+    - name: Install CadQuery and pyinstaller
+      shell: bash --login {0}
+      run: |
+        conda info
+        conda install -c cadquery -c conda-forge cadquery=master
+        conda install -c conda-forge pyinstaller
+        pip install path
+    - name: Run build
+      shell: bash --login {0}
+      run: |
+        conda info
+        pyinstaller cq-cli_pyinstaller.spec ${{ github.event.inputs.type }}
+    - uses: actions/upload-artifact@v2
+      with:
+        name: cq-cli-MacOS
+        path: dist
   build-linux:
     runs-on: windows-latest
     steps:
