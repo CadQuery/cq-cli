@@ -16,20 +16,20 @@ jobs:
           ref: ${{ github.event.pull_request.head.sha }}
       - uses: conda-incubator/setup-miniconda@v1
         with:
-          auto-update-conda: true
+          miniconda-version: "latest"
           python-version: 3.8
-      - name: Install CadQuery
+          activate-environment: test
+      - name: Install CadQuery and pytest
         shell: bash --login {0}
-        run: conda install -c cadquery -c conda-forge cadquery=master
-      - name: Get conda info
+        run: |
+          conda info
+          conda install -c cadquery -c conda-forge cadquery=master
+          conda install -c anaconda pytest
+      - name: Run tests
         shell: bash --login {0}
-        run: conda info
-      - name: Install pytest
-        shell: bash --login {0}
-        run: pip install pytest
-      - name: Run pytest
-        shell: bash --login {0}
-        run: pytest -v
+        run: |
+          conda info
+          pytest -v
   run-pytest-macos:
     runs-on: macos-latest
     steps:
@@ -38,20 +38,20 @@ jobs:
           ref: ${{ github.event.pull_request.head.sha }}
       - uses: conda-incubator/setup-miniconda@v1
         with:
-          auto-update-conda: true
+          miniconda-version: "latest"
           python-version: 3.8
-      - name: Install CadQuery
+          activate-environment: test
+      - name: Install CadQuery and pytest
         shell: bash --login {0}
-        run: conda install -c cadquery -c conda-forge cadquery=master
-      - name: Get conda info
+        run: |
+          conda info
+          conda install -c cadquery -c conda-forge cadquery=master
+          conda install -c anaconda pytest
+      - name: Run tests
         shell: bash --login {0}
-        run: conda info
-      - name: Install pytest
-        shell: bash --login {0}
-        run: pip install pytest
-      - name: Run pytest
-        shell: bash --login {0}
-        run: pytest -v
+        run: |
+          conda info
+          pytest -v
   run-pytest-win:
     runs-on: "windows-latest"
     steps:
@@ -63,10 +63,14 @@ jobs:
           miniconda-version: "latest"
           python-version: 3.8
           activate-environment: test
-      - name: Install CadQuery
+      - name: Install CadQuery and pytest
         shell: pwsh
         run: |
-          conda install -c cadquery -c conda-forge cadquery=master
           conda info
+          conda install -c cadquery -c conda-forge cadquery=master
           conda install -c anaconda pytest
+      - name: Run tests
+        shell: pwsh
+        run: |
+          conda info 
           pytest -v

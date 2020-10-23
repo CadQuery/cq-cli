@@ -57,10 +57,14 @@ jobs:
           miniconda-version: "latest"
           python-version: 3.8
           activate-environment: test
-      - name: Install CadQuery
+      - name: Install CadQuery and pytest
         shell: pwsh
         run: |
-          conda install -c cadquery -c conda-forge cadquery=master
           conda info
+          conda install -c cadquery -c conda-forge cadquery=master
           conda install -c anaconda pytest
+      - name: Run tests
+        shell: pwsh
+        run: |
+          conda info 
           pytest -v
