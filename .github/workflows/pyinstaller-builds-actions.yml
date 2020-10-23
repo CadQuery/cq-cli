@@ -1,5 +1,11 @@
 name: build
-on: workflow_dispatch
+on:
+  workflow_dispatch:
+    inputs:
+      name:
+        description: 'Whether to build a single file (onefile) or directory (dir) dist'
+        required: true
+        default: 'dir'
 jobs:
   build-linux:
     runs-on: ubuntu-latest
