@@ -2,7 +2,7 @@ name: build
 on:
   workflow_dispatch:
     inputs:
-      name:
+      type:
         description: 'Whether to build a single file (onefile) or directory (dir) dist'
         required: true
         default: 'dir'
@@ -11,6 +11,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
+    - uses: actions/upload-artifact@v2
+      with:
+        name: cq-cli-Linux-x86_64
+        path: dist/cq-cli-Linux-x86_64
     - uses: conda-incubator/setup-miniconda@v1
       with:
         miniconda-version: "latest"
@@ -27,4 +31,5 @@ jobs:
       shell: bash --login {0}
       run: |
         conda info
-        pyinstaller cq-cli_pyinstaller.spec
+        pyinstaller cq-cli_pyinstaller.spec ${{ github.event.inputs.type }}
+        mv dist/cq-cli dist/cq-cli-Linux-x86_64
