@@ -14,7 +14,7 @@ jobs:
     - uses: actions/upload-artifact@v2
       with:
         name: cq-cli-Linux-x86_64
-        path: dist/cq-cli-Linux-x86_64
+        path: dist/cq-cli
     - uses: conda-incubator/setup-miniconda@v1
       with:
         miniconda-version: "latest"
@@ -32,4 +32,3 @@ jobs:
       run: |
         conda info
         pyinstaller cq-cli_pyinstaller.spec ${{ github.event.inputs.type }}
-        mv dist/cq-cli dist/cq-cli-Linux-x86_64
