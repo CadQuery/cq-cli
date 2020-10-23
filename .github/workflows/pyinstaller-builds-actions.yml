@@ -11,10 +11,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - uses: actions/upload-artifact@v2
-      with:
-        name: cq-cli-Linux-x86_64
-        path: dist/cq-cli
     - uses: conda-incubator/setup-miniconda@v1
       with:
         miniconda-version: "latest"
@@ -32,4 +28,7 @@ jobs:
       run: |
         conda info
         pyinstaller cq-cli_pyinstaller.spec ${{ github.event.inputs.type }}
-        ls -l dist/
+    - uses: actions/upload-artifact@v2
+      with:
+        name: cq-cli-Linux-x86_64
+        path: dist/cq-cli
