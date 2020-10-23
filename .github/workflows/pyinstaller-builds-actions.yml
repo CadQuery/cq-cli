@@ -32,4 +32,4 @@ jobs:
       run: |
         conda info
         pyinstaller cq-cli_pyinstaller.spec ${{ github.event.inputs.type }}
-        ls -l
+        ls -l dist/
