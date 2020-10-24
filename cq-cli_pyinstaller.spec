@@ -23,7 +23,7 @@ elif sys.platform == 'darwin':
     ocp_path = (os.path.join(HOMEPATH, 'OCP.cpython-38-darwin.so'), '.')
 elif sys.platform == 'win32':
     occt_dir = Path(sys.prefix) + os.path.sep + 'Library' + os.path.sep + 'share' + os.path.sep + 'opencascade'
-    ocp_path = (os.path.join(HOMEPATH, 'OCP.cp38-win_amd64.pyd'), '.')
+    ocp_path = (os.path.join('C:\Miniconda3\envs\test\Lib\site-packages', 'OCP.cp38-win_amd64.pyd'), '.')
 
 # Dynamically find all the modules in the cqcodecs directory
 hidden_imports = []
