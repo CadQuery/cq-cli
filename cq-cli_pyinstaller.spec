@@ -20,7 +20,7 @@ if sys.platform == 'linux':
     ocp_path = (os.path.join(HOMEPATH, 'OCP.cpython-38-x86_64-linux-gnu.so'), '.')
 elif sys.platform == 'darwin':
     occt_dir = Path(sys.prefix) + os.path.sep + 'Library' + os.path.sep + 'share' + os.path.sep + 'opencascade'
-    ocp_path = (os.path.join(HOMEPATH, 'OCP.cpython-38-x86_64-linux-gnu.so'), '.')
+    ocp_path = (os.path.join(HOMEPATH, 'OCP.cpython-38-darwin.so'), '.')
 elif sys.platform == 'win32':
     occt_dir = Path(sys.prefix) + os.path.sep + 'Library' + os.path.sep + 'share' + os.path.sep + 'opencascade'
     ocp_path = (os.path.join(HOMEPATH, 'OCP.cp38-win_amd64.pyd'), '.')
