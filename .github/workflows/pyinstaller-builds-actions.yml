@@ -73,6 +73,7 @@ jobs:
         conda install -c cadquery -c conda-forge cadquery=master
         conda install -c conda-forge pyinstaller
         pip install path
+        ls C:\Miniconda3\envs\test\lib\site-packages
     - name: Run build
       shell: pwsh
       run: |
