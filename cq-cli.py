@@ -177,6 +177,10 @@ def main():
     build_result = None
     try:
         build_result = build_and_parse(script_str, params, errfile)
+
+        # If None was returned, it means the build failed and the exception has already been reported
+        if build_result == None:
+            return
     except Exception as err:
         # Write the file to the appropriate place based on what the user specified
         if errfile == None:
