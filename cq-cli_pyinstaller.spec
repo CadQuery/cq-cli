@@ -22,7 +22,7 @@ elif sys.platform == 'darwin':
     lib_dir = (os.path.join(Path(sys.prefix), 'lib'), '.')
 elif sys.platform == 'win32':
     occt_dir = os.path.join(Path(sys.prefix), 'Library', 'share', 'opencascade')
-    ocp_path = (os.path.join(HOMEPATH, 'OCP.cp38-win_amd64.pyd'), '.')
+    ocp_path = (os.path.join(HOMEPATH, 'OCP.cp38-win_amd64.pyd'), 'OCP')
     lib_dir = (os.path.join(Path(sys.prefix), 'Lib'), '.')
 
 # Dynamically find all the modules in the cqcodecs directory
