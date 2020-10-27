@@ -32,6 +32,7 @@ for file_path in file_list:
     file_name = file_path.split(os.path.sep)[-1]
     module_name = file_name.replace(".py", "")
     hidden_imports.append("cqcodecs." + module_name)
+hidden_imports.append('OCP')
 
 a = Analysis(['cq-cli.py'],
              pathex=['.'],
