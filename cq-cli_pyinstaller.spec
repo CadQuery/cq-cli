@@ -6,30 +6,29 @@ from path import Path
 # Whether we are running in onefile or dir mode
 onefile_mode = True
 if len(sys.argv) == 3:
-    print(sys.argv[2])
     if sys.argv[2] == 'onefile':
         onefile_mode = True
     elif sys.argv[2] == 'dir':
         onefile_mode = False
 
 block_cipher = None
-print(HOMEPATH)
-print(sys.platform)
 if sys.platform == 'linux':
     occt_dir = Path(sys.prefix) + os.path.sep + 'share' + os.path.sep + 'opencascade'
     ocp_path = (os.path.join(HOMEPATH, 'OCP.cpython-38-x86_64-linux-gnu.so'), '.')
+    lib_dir = (os.path.join(Path(sys.prefix), 'lib'), '.')
 elif sys.platform == 'darwin':
     occt_dir = Path(sys.prefix) + os.path.sep + 'Library' + os.path.sep + 'share' + os.path.sep + 'opencascade'
     ocp_path = (os.path.join(HOMEPATH, 'OCP.cpython-38-darwin.so'), '.')
+    lib_dir = (os.path.join(Path(sys.prefix), 'lib'), '.')
 elif sys.platform == 'win32':
-    occt_dir = Path(sys.prefix) + os.path.sep + 'Library' + os.path.sep + 'share' + os.path.sep + 'opencascade'
+    occt_dir = os.path.join(Path(sys.prefix), 'Library', 'share', 'opencascade')
     ocp_path = (os.path.join(HOMEPATH, 'OCP.cp38-win_amd64.pyd'), '.')
+    lib_dir = (os.path.join(Path(sys.prefix), 'Lib'), '.')
 
 # Dynamically find all the modules in the cqcodecs directory
 hidden_imports = []
 file_list = glob.glob('.' + os.path.sep + 'cqcodecs' + os.path.sep + 'cq_codec_*.py')
 for file_path in file_list:
-    print(file_path)
     file_name = file_path.split(os.path.sep)[-1]
     module_name = file_name.replace(".py", "")
     hidden_imports.append("cqcodecs." + module_name)
@@ -40,7 +39,7 @@ a = Analysis(['cq-cli.py'],
                  ocp_path
              ],
              datas=[
-                 (os.path.join(Path(sys.prefix), 'lib'), '.')
+                 lib_dir
              ],
              hiddenimports=hidden_imports,
              hookspath=[],
