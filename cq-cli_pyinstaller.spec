@@ -40,7 +40,8 @@ a = Analysis(['cq-cli.py'],
                  ocp_path
              ],
              datas=[
-                 lib_dir
+                 lib_dir,
+                 (os.path.join(os.path.dirname(os.path.realpath('__file__')), 'cqcodecs'), 'cqcodecs')
              ],
              hiddenimports=hidden_imports,
              hookspath=[],
