@@ -207,13 +207,15 @@ def main():
                 with open(outfile, 'w') as file:
                     file.write(converted)
 
-    except Exception as err:
+    except Exception:
+        out_tb = traceback.format_exc()
+
         # Send the error to wherever the user requested
         if errfile == None:
-            print("Conversion codec error: " + str(err), file=sys.stderr)
+            print("Conversion codec error: " + str(out_tb), file=sys.stderr)
         else:
             with open(errfile, 'w') as file:
-                file.write(str(err))
+                file.write(str(out_tb))
 
 if __name__ == "__main__":
     main()
