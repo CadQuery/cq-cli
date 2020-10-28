@@ -30,7 +30,7 @@ In addition to opening an issue on this repo, there is a [CadQuery Discord chann
 
 ## Installation
 
-Download a binary distribution that is appropriate for your operating system from the latest release, extract the zip file, and make sure to put the cq-cli binary in the PATH. Then the CLI can be invoked as `cq-cli` (`cq-cli.exe` on Windows).
+Download a binary distribution that is appropriate for your operating system from the [latest release](https://github.com/CadQuery/cq-cli/releases/tag/v0.1.0-alpha), extract the zip file, and make sure to put the cq-cli binary in the PATH. Then the CLI can be invoked as `cq-cli` (`cq-cli.exe` on Windows).
 
 If a development installation is desired, see the [Contributing](#contributing) section below.
 
