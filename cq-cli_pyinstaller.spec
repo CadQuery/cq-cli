@@ -13,17 +13,14 @@ if len(sys.argv) == 3:
 
 block_cipher = None
 if sys.platform == 'linux':
-    occt_dir = Path(sys.prefix) + os.path.sep + 'share' + os.path.sep + 'opencascade'
+    occt_dir = os.path.join(Path(sys.prefix), 'share', 'opencascade')
     ocp_path = (os.path.join(HOMEPATH, 'OCP.cpython-38-x86_64-linux-gnu.so'), '.')
-    lib_dir = (os.path.join(Path(sys.prefix), 'lib'), '.')
 elif sys.platform == 'darwin':
-    occt_dir = Path(sys.prefix) + os.path.sep + 'Library' + os.path.sep + 'share' + os.path.sep + 'opencascade'
+    occt_dir = os.path.join(Path(sys.prefix), 'Library', 'share', 'opencascade')
     ocp_path = (os.path.join(HOMEPATH, 'OCP.cpython-38-darwin.so'), '.')
-    lib_dir = (os.path.join(Path(sys.prefix), 'lib'), '.')
 elif sys.platform == 'win32':
     occt_dir = os.path.join(Path(sys.prefix), 'Library', 'share', 'opencascade')
     ocp_path = (os.path.join(HOMEPATH, 'OCP.cp38-win_amd64.pyd'), '.')
-    lib_dir = (os.path.join(Path(sys.prefix), 'Lib'), '.')
 
 # Dynamically find all the modules in the cqcodecs directory
 hidden_imports = []
@@ -40,7 +37,6 @@ a = Analysis(['cq-cli.py'],
                  ocp_path
              ],
              datas=[
-                 lib_dir,
                  (os.path.join(os.path.dirname(os.path.realpath('__file__')), 'cqcodecs'), 'cqcodecs')
              ],
              hiddenimports=hidden_imports,
