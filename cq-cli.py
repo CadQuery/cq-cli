@@ -69,6 +69,20 @@ def get_script_from_infile(infile, outfile, errfile):
 
     return script_str
 
+
+def set_pythonpath_for_infile(infile):
+    """
+    Sets the PYTHONPATH environment variable to include the location of the infile.
+    """
+
+    # If the infile is none we are reading from stdin and there is nothing to set
+    if infile == None:
+        return
+
+    # Make sure that any user-created modules are found
+    sys.path.append(os.path.abspath(os.path.join(infile, os.pardir)))
+
+
 def main():
     infile = None
     outfile = None
@@ -119,6 +133,9 @@ def main():
 
         if script_str == None: return
 
+        # Set the PYTHONPATH variable to the current directory to allow module loading
+        set_pythonpath_for_infile(args.infile)
+
         build_result = build_and_parse(script_str, params, errfile)
 
         # Double-check that the build was a success
@@ -159,6 +176,9 @@ def main():
     script_str = get_script_from_infile(infile, outfile, errfile)
 
     if script_str == None: return
+
+    # Set the PYTHONPATH variable to the current directory to allow module loading
+    set_pythonpath_for_infile(args.infile)
 
     #
     # Parameter handling
