@@ -83,6 +83,7 @@ jobs:
       run: |
         conda info
         Get-ChildItem "C:\Miniconda3\envs\test\" -Filter "*.pyd"
+        Get-ChildItem "C:\Miniconda3\envs\test\" -Filter "*.dll"
         pyinstaller cq-cli_pyinstaller.spec ${{ github.event.inputs.type }}
     - uses: actions/upload-artifact@v2
       with:
