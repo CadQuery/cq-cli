@@ -3,7 +3,7 @@ from cadquery import exporters
 import cadquery as cq
 import cqcodecs.codec_helpers as helpers
 
-def convert(build_result, output_file=None, error_file=None):
+def convert(build_result, output_file=None, error_file=None, output_opts=None):
     # Create a temporary file to put the STL output into
     temp_dir = tempfile.gettempdir()
     temp_file = os.path.join(temp_dir, "temp_step.step")

@@ -38,7 +38,7 @@ If a development installation is desired, see the [Contributing](#contributing) 
 
 ## Usage
 
-usage: cq-cli.py [-h] [--codec CODEC] [--infile INFILE] [--outfile OUTFILE] [--errfile ERRFILE] [--params PARAMS] [--validate VALIDATE]
+usage: cq-cli.py [-h] [--codec CODEC] [--infile INFILE] [--outfile OUTFILE] [--errfile ERRFILE] [--params PARAMS] [--outputopts OPTS] [--validate VALIDATE]
 
 Command line utility for converting CadQuery script output to various other output formats.
 
@@ -49,6 +49,7 @@ optional arguments:
 * --outfile OUTFILE File to write the converted CadQuery output to. Prints to stdout if not specified.
 * --errfile ERRFILE File to write any errors to. Prints to stderr if not specified.
 * --params PARAMS A colon and semicolon delimited string (no spaces) of key/value pairs representing variables and their values in the CadQuery script. i.e. var1:10.0;var2:4.0;
+* --outputopts OPTS A colon and semicolon delimited string (no spaces) of key/value pairs representing options to pass to the selected codec.  i.e. width:100;height:200;
 * --validate VALIDATE Setting to true forces the CLI to only parse and validate the script and not produce converted output.
 
 ## Examples
@@ -76,6 +77,10 @@ optional arguments:
 6. Convert a CadQuery script using the stdin and stdout streams. This example counts the lines in the resulting STEP output as a trivial example.
 ```
 cat /input/path/script.py | cq-cli.py --codec step | wc -l
+```
+7. Convert a CadQuery script to SVG, passing in output options to influence the resulting image.
+```
+./cq-cli.py --codec svg --infile /input/path/script.py --outfile /output/path/newfile.svg --outputopts "width:100;height:100;marginLeft:12;marginTop:12;showAxes:False;projectionDir:(0.5,0.5,0.5);strokeWidth:0.25;strokeColor:(255,0,0);hiddenColor:(0,0,255);showHidden:True;"
 ```
 
 ## Drawbacks

@@ -90,6 +90,7 @@ def main():
     codec = None
     codec_module = None
     params = {}
+    output_opts = {}
 
     # Find the codecs that have been added.
     loaded_codecs = loader.load_codecs()
@@ -101,6 +102,7 @@ def main():
     parser.add_argument('--outfile', dest='outfile', help='File to write the converted CadQuery output to. Prints to stdout if not specified.')
     parser.add_argument('--errfile', dest='errfile', help='File to write any errors to. Prints to stderr if not specified.')
     parser.add_argument('--params', dest='params', help='A colon and semicolon delimited string (no spaces) of key/value pairs representing variables and their values in the CadQuery script.  i.e. var1:10.0;var2:4.0;')
+    parser.add_argument('--outputopts', dest='opts', help='A colon and semicolon delimited string (no spaces) of key/value pairs representing options to pass to the selected codec.  i.e. width:100;height:200;')
     parser.add_argument('--validate', dest='validate', help='Setting to true forces the CLI to only parse and validate the script and not produce converted output.')
 
     args = parser.parse_args()
@@ -189,7 +191,34 @@ def main():
         groups = args.params.split(';')
         for group in groups:
             param_parts = group.split(':')
-            params[param_parts[0]] = param_parts[1]
+            # Protect against a trailing semi-colon
+            if len(param_parts) == 2:
+                params[param_parts[0]] = param_parts[1]
+
+    #
+    # Output options handling
+    #
+    # Check whether any output options were passed
+    if args.opts != None:
+        # Convert the string of options into a output_opts dictionary
+        groups = args.opts.split(';')
+        for group in groups:
+            opt_parts = group.split(':')
+            # Protect against a trailing semi-colon
+            if len(opt_parts) == 2:
+                op1 = opt_parts[1]
+
+                # Handle the option data types properly
+                if op1 == "True" or op1 == "False":
+                    op = opt_parts[1] == "True"
+                elif op1[:1] == "(":
+                    op = tuple(map(float, opt_parts[1].replace("(", "").replace(")", "").split(',')))
+                elif "." in op1:
+                    op = float(opt_parts[1])
+                else:
+                    op = int(opt_parts[1])
+
+                output_opts[opt_parts[0]] = op
 
     #
     # Parse and build the script.
@@ -216,7 +245,7 @@ def main():
     # Build, parse and let the selected codec convert the CQ output
     try:
         # Use the codec plugin to do the conversion
-        converted = codec_module.convert(build_result, outfile, errfile)
+        converted = codec_module.convert(build_result, outfile, errfile, output_opts)
 
         # If converted is None, assume that the output was written to file directly by the codec
         if converted != None:
