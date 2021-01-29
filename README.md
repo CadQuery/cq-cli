@@ -78,6 +78,10 @@ optional arguments:
 ```
 cat /input/path/script.py | cq-cli.py --codec step | wc -l
 ```
+7. Convert a CadQuery script to SVG, passing in output options to influence the resulting image.
+```
+./cq-cli.py --codec svg --infile /input/path/script.py --outfile /output/path/newfile.svg --outputopts "width:100;height:100;marginLeft:12;marginTop:12;showAxes:False;projectionDir:(0.5,0.5,0.5);strokeWidth:0.25;strokeColor:(255,0,0);hiddenColor:(0,0,255);showHidden:True;"
+```
 
 ## Drawbacks
 

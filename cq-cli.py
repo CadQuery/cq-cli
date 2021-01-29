@@ -206,7 +206,19 @@ def main():
             opt_parts = group.split(':')
             # Protect against a trailing semi-colon
             if len(opt_parts) == 2:
-                output_opts[opt_parts[0]] = opt_parts[1]
+                op1 = opt_parts[1]
+
+                # Handle the option data types properly
+                if op1 == "True" or op1 == "False":
+                    op = opt_parts[1] == "True"
+                elif op1[:1] == "(":
+                    op = tuple(map(float, opt_parts[1].replace("(", "").replace(")", "").split(',')))
+                elif "." in op1:
+                    op = float(opt_parts[1])
+                else:
+                    op = int(opt_parts[1])
+
+                output_opts[opt_parts[0]] = op
 
     #
     # Parse and build the script.
