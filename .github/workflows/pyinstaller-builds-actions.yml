@@ -23,7 +23,7 @@ jobs:
       shell: bash --login {0}
       run: |
         conda info
-        conda install -c cadquery -c conda-forge cadquery=master ocp=7.4
+        conda install -c cadquery -c conda-forge cadquery=master ocp=7.5
         conda install -c conda-forge pyinstaller
         pip install path
     - name: Run build
@@ -49,7 +49,7 @@ jobs:
       shell: bash --login {0}
       run: |
         conda info
-        conda install -c cadquery -c conda-forge cadquery=master ocp=7.4
+        conda install -c cadquery -c conda-forge cadquery=master ocp=7.5
         conda install -c conda-forge pyinstaller
         pip install path
     - name: Run build
@@ -75,7 +75,7 @@ jobs:
       shell: pwsh
       run: |
         conda info
-        conda install -c cadquery -c conda-forge cadquery=master ocp=7.4
+        conda install -c cadquery -c conda-forge cadquery=master ocp=7.5
         conda install -c conda-forge pyinstaller
         pip install path
     - name: Run build
