@@ -62,7 +62,7 @@ if onefile_mode:
             debug=False,
             bootloader_ignore_signals=False,
             strip=False,
-            upx=True,
+            upx=False,
             upx_exclude=[],
             runtime_tmpdir=None,
             console=True )
@@ -75,7 +75,7 @@ else:
           debug=False,
           bootloader_ignore_signals=False,
           strip=False,
-          upx=True,
+          upx=False,
           console=True )
 
 exclude = ('libGL','libEGL','libbsd')
@@ -87,6 +87,6 @@ if not onefile_mode:
                a.zipfiles,
                a.datas,
                strip=False,
-               upx=True,
+               upx=False,
                upx_exclude=[],
                name='cq-cli')
