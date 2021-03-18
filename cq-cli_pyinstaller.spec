@@ -2,6 +2,7 @@
 import sys, site, os
 import glob
 from path import Path
+from PyInstaller.utils.hooks import collect_submodules
 
 # Whether we are running in onefile or dir mode
 onefile_mode = True
@@ -30,6 +31,10 @@ for file_path in file_list:
     module_name = file_name.replace(".py", "")
     hidden_imports.append("cqcodecs." + module_name)
 hidden_imports.append('OCP')
+
+# numpy hidden imports
+hidden_imports_numpy = collect_submodules('numpy')
+hidden_imports = hidden_imports + hidden_imports_numpy
 
 a = Analysis(['cq-cli.py'],
              pathex=['.'],
