@@ -31,6 +31,12 @@ for file_path in file_list:
     module_name = file_name.replace(".py", "")
     hidden_imports.append("cqcodecs." + module_name)
 hidden_imports.append('OCP')
+hidden_imports.append('typing_extensions')
+hidden_imports.append('pyparsing')
+hidden_imports.append('ezdxf')
+hidden_imports.append('nptyping')
+hidden_imports.append('typish')
+hidden_imports.append('numpy.core.dtype')
 
 # numpy hidden imports
 hidden_imports_numpy = collect_submodules('numpy')
