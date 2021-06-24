@@ -39,6 +39,7 @@ hidden_imports.append('typish')
 hidden_imports.append('numpy.core.dtype')
 hidden_imports.append('numpy.core._dtype')
 hidden_imports.append('vtkmodules')
+hidden_imports.append('vtkmodules.all')
 
 # numpy hidden imports
 hidden_imports_numpy = collect_submodules('numpy')
