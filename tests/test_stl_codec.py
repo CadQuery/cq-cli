@@ -18,17 +18,17 @@ def test_stl_codec_quality():
     """
     test_file = helpers.get_test_file_location("sphere.py")
 
-    command = ["python", "cq-cli.py", "--codec", "stl", "--infile", test_file, "--outfile", "/tmp/high.stl"]
+    command = ["python", "cq-cli.py", "--codec", "stl", "--infile", test_file]
     out, err, exitcode = helpers.cli_call(command)
 
     # Keep track of the number of lines for each STL as an approximate measure of quality
-    high_detail = os.path.getsize("/tmp/high.stl")
+    high_detail = len(out.decode().split('\n'))
 
     # Attempt to adjust the quality of the resulting STL
-    command2 = ["python", "cq-cli.py", "--codec", "stl", "--infile", test_file, "--outfile", "/tmp/low.stl", "--outputopts", "linearDeflection:0.3;angularDeflection:0.3"]
+    command2 = ["python", "cq-cli.py", "--codec", "stl", "--infile", test_file, "--outputopts", "linearDeflection:0.3;angularDeflection:0.3"]
     out2, err2, exitcode2 = helpers.cli_call(command2)
 
     # Keep track of the number of lines in the STL as an approximate measure of quality
-    low_detail = os.path.getsize("/tmp/low.stl")
+    low_detail = len(out2.decode().split('\n'))
 
     assert low_detail < high_detail
