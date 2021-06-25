@@ -82,6 +82,10 @@ cat /input/path/script.py | cq-cli.py --codec step | wc -l
 ```
 ./cq-cli.py --codec svg --infile /input/path/script.py --outfile /output/path/newfile.svg --outputopts "width:100;height:100;marginLeft:12;marginTop:12;showAxes:False;projectionDir:(0.5,0.5,0.5);strokeWidth:0.25;strokeColor:(255,0,0);hiddenColor:(0,0,255);showHidden:True;"
 ```
+8. Convert a CadQuery script to STL, passing in output options to change the quality of the resulting STL. Explanation of linear vs angular deflection can be found [here](https://dev.opencascade.org/doc/occt-7.1.0/overview/html/occt_user_guides__modeling_algos.html#occt_modalg_11_2).
+```
+./cq-cli.py --codec stl --infile /input/path/script.py --outfile /input/path/script.stl --outputopts "linearDeflection:0.3;angularDeflection:0.3"
+```
 
 ## Drawbacks
 

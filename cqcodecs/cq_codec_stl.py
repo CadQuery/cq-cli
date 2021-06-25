@@ -8,10 +8,19 @@ def convert(build_result, output_file=None, error_file=None, output_opts=None):
     temp_dir = tempfile.gettempdir()
     temp_file = os.path.join(temp_dir, "temp_stl.stl")
 
+    linearDeflection = 0.1
+    angularDeflection = 0.1
+
+    # If the user has provided the deflection settings, use them
+    if "linearDeflection" in output_opts:
+        linearDeflection = output_opts["linearDeflection"]
+    if "angularDeflection" in output_opts:
+        angularDeflection = output_opts["angularDeflection"]
+
     # The exporters will add extra output that we do not want, so suppress it
     with helpers.suppress_stdout_stderr():
         # Put the STEP output into the temp file
-        exporters.export(build_result.results[0].shape, temp_file, exporters.ExportTypes.STL)
+        exporters.export(build_result.results[0].shape, temp_file, exporters.ExportTypes.STL, tolerance=linearDeflection, angularTolerance=angularDeflection)
 
     # Read the STEP output back in
     with open(temp_file, 'r') as file:
