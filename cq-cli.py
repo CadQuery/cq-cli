@@ -6,6 +6,7 @@ import cadquery as cq
 from cadquery import cqgi
 import fileinput
 import traceback
+import json
 from cqcodecs import loader
 
 def build_and_parse(script_str, params, errfile):
@@ -98,6 +99,7 @@ def main():
     # Parse the command line arguments
     parser = argparse.ArgumentParser(description='Command line utility for converting CadQuery script output to various other output formats.')
     parser.add_argument('--codec', dest='codec', help='The codec to use when converting the CadQuery output. Must match the name of a codec file in the cqcodecs directory.')
+    parser.add_argument('--getparams', dest='getparams', help='Analyzes the script and returns a JSON string with the parameter information.')
     parser.add_argument('--infile', dest='infile', help='The input CadQuery script to convert.')
     parser.add_argument('--outfile', dest='outfile', help='File to write the converted CadQuery output to. Prints to stdout if not specified.')
     parser.add_argument('--errfile', dest='errfile', help='File to write any errors to. Prints to stderr if not specified.')
@@ -108,7 +110,7 @@ def main():
     args = parser.parse_args()
 
     # Make sure that the user has at least specified the validate or codec arguments
-    if args.validate == None and args.codec == None:
+    if args.validate == None and args.getparams == None and args.codec == None:
         parser.print_help(sys.stderr)
         return
 
@@ -148,6 +150,70 @@ def main():
                     file.write('validation_success')
             else:
                 print('validation_success')
+
+        return
+
+    #
+    # Parameter analysis
+    #
+    # Analyzes the parameters that are available in the script.
+    #
+    if args.getparams == 'true':
+        # Array of dictionaries that holds the parameter data
+        params = []
+
+        # Load the script string
+        script_str = get_script_from_infile(args.infile, outfile, errfile)
+        if script_str == None: return
+
+        # Set the PYTHONPATH variable to the current directory to allow module loading
+        set_pythonpath_for_infile(args.infile)
+
+        # A repreentation of the CQ script with all the metadata attached
+        cq_model = None
+        try:
+            cq_model = cqgi.parse(script_str)
+        except Exception as err:
+            print("Script error: " + str(err), file=sys.stderr)
+
+        # Allows us to present parameters to users later that they can alter
+        parameters = cq_model.metadata.parameters
+
+        # Step through all the parameters and add them to the array of dictionaries
+        for key in parameters:
+            new_dict = {}
+
+            # Return the data type of the parameter, trying to match conventions set by other platforms
+            if parameters[key].varType.__name__ == "NumberParameterType":
+                new_dict["type"] = "number"
+
+            # Save the name of the paramter
+            new_dict["name"] = parameters[key].name
+
+            # If there is a description, save it
+            if parameters[key].desc:
+                new_dict["caption"] = parameters[key].desc
+
+            # If there is an initial value, save it
+            if parameters[key].default_value:
+                new_dict["initial"] = parameters[key].default_value
+
+            # If there are values set for valid values via describe_parameter(), add those
+            if parameters[key].valid_values:
+                new_dict["min"] = parameters[key].valid_values[0]
+                new_dict["max"] = parameters[key].valid_values[-1]
+                new_dict["step"] = new_dict["max"] - new_dict["min"]
+
+                # Ensure that the step is larger than 0
+                if new_dict["step"] <= 0:
+                    new_dict["step"] = 1
+
+             # Write the converted output to the appropriate place based on the command line arguments
+            if outfile == None:
+                print(json.dumps(new_dict))
+            else:
+                with open(outfile, 'w') as file:
+                    file.write(json.dumps(new_dict))
 
         return
 
