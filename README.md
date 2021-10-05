@@ -45,6 +45,7 @@ Command line utility for converting CadQuery script output to various other outp
 optional arguments:
 * -h, --help Show this help message and exit
 * --codec CODEC The codec to use when converting the CadQuery output. Must match the name of a codec file in the cqcodecs directory.
+* --getparams GETPARAMS 
 * --infile INFILE The input CadQuery script to convert.
 * --outfile OUTFILE File to write the converted CadQuery output to. Prints to stdout if not specified.
 * --errfile ERRFILE File to write any errors to. Prints to stderr if not specified.
@@ -84,7 +85,11 @@ cat /input/path/script.py | cq-cli.py --codec step | wc -l
 ```
 8. Convert a CadQuery script to STL, passing in output options to change the quality of the resulting STL. Explanation of linear vs angular deflection can be found [here](https://dev.opencascade.org/doc/occt-7.1.0/overview/html/occt_user_guides__modeling_algos.html#occt_modalg_11_2).
 ```
-./cq-cli.py --codec stl --infile /input/path/script.py --outfile /input/path/script.stl --outputopts "linearDeflection:0.3;angularDeflection:0.3"
+./cq-cli.py --codec stl --infile /input/path/script.py --outfile /output/path/script.stl --outputopts "linearDeflection:0.3;angularDeflection:0.3"
+```
+9. Extract parameter information from the input script. The outfile argument can also be left off to output the parameter JSON to stdout.
+```
+./cq-cli.py --getparams true --infile /input/path/script.py --outfile /output/path/output.txt
 ```
 
 ## Drawbacks
