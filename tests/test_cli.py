@@ -72,3 +72,64 @@ def test_codec_infile_outfile_errfile_arguments():
         err_str = file.read()
 
     assert err_str == "Argument error: infile does not exist."
+
+
+def test_parameter_file():
+    """
+    Tests the CLI's ability to load JSON parameters from a file.
+    """
+    test_file = helpers.get_test_file_location("cube_params.py")
+    params_file = helpers.get_test_file_location("cube_params.json")
+
+    # Get a temporary output file location
+    temp_dir = tempfile.gettempdir()
+    temp_file = os.path.join(temp_dir, "temp_test_6.step")
+
+    command = ["python", "cq-cli.py", "--codec", "step", "--infile", test_file, '--outfile', temp_file, '--params', params_file]
+    out, err, exitcode = helpers.cli_call(command)
+
+    # Read the STEP output back from the outfile
+    with open(temp_file, 'r') as file:
+        step_str = file.read()
+
+    assert step_str.startswith("ISO-10303-21;")
+
+
+def test_parameter_json_string():
+    """
+    Tests the CLI's ability to load JSON parameters from the command line.
+    """
+    test_file = helpers.get_test_file_location("cube_params.py")
+
+    # Get a temporary output file location
+    temp_dir = tempfile.gettempdir()
+    temp_file = os.path.join(temp_dir, "temp_test_7.step")
+
+    command = ["python", "cq-cli.py", "--codec", "step", "--infile", test_file, '--outfile', temp_file, '--params', "{\"width\":10}"]
+    out, err, exitcode = helpers.cli_call(command)
+
+    # Read the STEP output back from the outfile
+    with open(temp_file, 'r') as file:
+        step_str = file.read()
+
+    assert step_str.startswith("ISO-10303-21;")
+
+
+def test_parameter_delimited_string():
+    """
+    Tests the CLI's ability to load parameters from a colon and semi-colon delimited string.
+    """
+    test_file = helpers.get_test_file_location("cube_params.py")
+
+    # Get a temporary output file location
+    temp_dir = tempfile.gettempdir()
+    temp_file = os.path.join(temp_dir, "temp_test_8.step")
+
+    command = ["python", "cq-cli.py", "--codec", "step", "--infile", test_file, '--outfile', temp_file, '--params', "width:10;"]
+    out, err, exitcode = helpers.cli_call(command)
+
+    # Read the STEP output back from the outfile
+    with open(temp_file, 'r') as file:
+        step_str = file.read()
+
+    assert step_str.startswith("ISO-10303-21;")

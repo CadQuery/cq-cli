@@ -84,6 +84,28 @@ def set_pythonpath_for_infile(infile):
     sys.path.append(os.path.abspath(os.path.join(infile, os.pardir)))
 
 
+def get_params_from_file(param_json_path, errfile):
+    """
+    Loads JSON parameters in a file into a Python dictionary.
+    """
+    param_dict = None
+
+    # Make sure that the file exists
+    if os.path.isfile(param_json_path):
+        # Read the contents of the file
+        with open(param_json_path, 'r') as file:
+            params_json = file.read()
+            param_dict = json.loads(params_json)
+    else:
+        if errfile == None:
+            print("Parameter file does not exist, default parameters will be used. ", file=sys.stderr)
+        else:
+            with open(errfile, 'w') as file:
+                file.write("Argument error: Parameter file does not exist, default parameters will be used.")
+
+    return param_dict
+
+
 def main():
     infile = None
     outfile = None
@@ -253,13 +275,25 @@ def main():
     #
     # Check whether any parameters were passed
     if args.params != None:
-        # Convert the string of parameters into a params dictionary
-        groups = args.params.split(';')
-        for group in groups:
-            param_parts = group.split(':')
-            # Protect against a trailing semi-colon
-            if len(param_parts) == 2:
-                params[param_parts[0]] = param_parts[1]
+        # We have been passed a directory
+        if args.params.startswith('/') or args.params.startswith('.') or args.params.startswith('..') or args.params.startswith('~') or args.params[1] == ':':
+            # Load the parameters dictionary from the file
+            file_params = get_params_from_file(args.params, errfile)
+
+            # Make sure we got parameters back before we try to pass it to CQGI
+            if file_params != None:
+                params = file_params
+        elif args.params.startswith("{"):
+            # Convert the JSON string passed from the user to a Python dictionary
+            params = json.loads(args.params)
+        else:
+            # Convert the string of parameters into a params dictionary
+            groups = args.params.split(';')
+            for group in groups:
+                param_parts = group.split(':')
+                # Protect against a trailing semi-colon
+                if len(param_parts) == 2:
+                    params[param_parts[0]] = param_parts[1]
 
     #
     # Output options handling

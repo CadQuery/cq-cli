@@ -8,6 +8,6 @@ def test_threejs_codec():
 
     command = ["python", "cq-cli.py", "--codec", "threejs", "--infile", test_file]
     out, err, exitcode = helpers.cli_call(command)
-
+    print("Output: " + str(out.decode()))
     assert out.decode().split('\n')[5].replace('\r', '') == '        "vertices"      : 24,'
     assert out.decode().split('\n')[6].replace('\r', '') == '        "faces"         : 12,'
