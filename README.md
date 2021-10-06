@@ -1,6 +1,6 @@
 # cq-cli
 
-![tests](https://github.com/CadQuery/cq-cli/workflows/tests/badge.svg)
+[![tests](https://github.com/CadQuery/cq-cli/workflows/tests/badge.svg)](https://github.com/CadQuery/cq-cli/actions)
 
 ## Contents
 
