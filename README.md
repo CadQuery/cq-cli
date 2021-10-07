@@ -91,6 +91,14 @@ cat /input/path/script.py | cq-cli.py --codec step | wc -l
 ```
 ./cq-cli.py --getparams true --infile /input/path/script.py --outfile /output/path/output.txt
 ```
+10. Pass JSON parameter information from a file to be used in the script.
+```
+./cq-cli.py --codec stl --infile /input/path/script.py --outfile /output/path/output.stl --params /parameter/path/parameters.json
+```
+11. Pass JSON parameter data as a string on the command line.
+```
+./cq-cli.py --codec stl --infile /input/path/script.py --params "{\"width\":10}"
+```
 
 ## Drawbacks
 
