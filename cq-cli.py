@@ -202,40 +202,46 @@ def main():
         parameters = cq_model.metadata.parameters
 
         # Step through all the parameters and add them to the array of dictionaries
-        for key in parameters:
+        for param in parameters.values():
             new_dict = {}
 
             # Return the data type of the parameter, trying to match conventions set by other platforms
-            if parameters[key].varType.__name__ == "NumberParameterType":
+            if param.varType.__name__ == "NumberParameterType":
                 new_dict["type"] = "number"
+            elif param.varType.__name__ == "StringParameterType":
+                new_dict["type"] = "string"
+            elif param.varType.__name__ == "BooleanParameterType":
+                new_dict["type"] = "boolean"
 
             # Save the name of the paramter
-            new_dict["name"] = parameters[key].name
+            new_dict["name"] = param.name
 
             # If there is a description, save it
-            if parameters[key].desc:
-                new_dict["caption"] = parameters[key].desc
+            if param.desc:
+                new_dict["caption"] = param.desc
 
             # If there is an initial value, save it
-            if parameters[key].default_value:
-                new_dict["initial"] = parameters[key].default_value
+            if param.default_value:
+                new_dict["initial"] = param.default_value
 
             # If there are values set for valid values via describe_parameter(), add those
-            if parameters[key].valid_values:
-                new_dict["min"] = parameters[key].valid_values[0]
-                new_dict["max"] = parameters[key].valid_values[-1]
+            if param.valid_values:
+                new_dict["min"] = param.valid_values[0]
+                new_dict["max"] = param.valid_values[-1]
                 new_dict["step"] = new_dict["max"] - new_dict["min"]
 
                 # Ensure that the step is larger than 0
                 if new_dict["step"] <= 0:
                     new_dict["step"] = 1
 
-             # Write the converted output to the appropriate place based on the command line arguments
-            if outfile == None:
-                print(json.dumps(new_dict))
-            else:
-                with open(outfile, 'w') as file:
-                    file.write(json.dumps(new_dict))
+            params.append(new_dict)
+
+        # Write the converted output to the appropriate place based on the command line arguments
+        if outfile == None:
+            print(json.dumps(params))
+        else:
+            with open(outfile, 'w') as file:
+                file.write(json.dumps(params))
 
         return
 

@@ -1,6 +1,7 @@
 import os, tempfile
 import pytest
 import tests.test_helpers as helpers
+import json
 
 def test_no_cli_arguments():
     """
@@ -133,3 +134,31 @@ def test_parameter_delimited_string():
         step_str = file.read()
 
     assert step_str.startswith("ISO-10303-21;")
+
+
+def test_parameter_analysis():
+    """
+    Tests the CLI's ability to extract parameters from a CadQuery script.
+    """
+    test_file = helpers.get_test_file_location("cube_params.py")
+
+    command = ["python", "cq-cli.py", "--getparams", "true", "--infile", test_file]
+    out, err, exitcode = helpers.cli_call(command)
+
+    # Grab the JSON output from cq-cli
+    jsn = json.loads(out.decode())
+
+    # Check to make sure the first parameter was handled properly
+    assert jsn[0]["type"] == "number"
+    assert jsn[0]["name"] == "width"
+    assert jsn[0]["initial"] == 1
+
+    # Check to make sure the second parameter was handled properly
+    assert jsn[1]["type"] == "string"
+    assert jsn[1]["name"] == "tag_name"
+    assert jsn[1]["initial"] == "cube"
+
+    # Check to make sure the third parameter was handled properly
+    assert jsn[2]["type"] == "boolean"
+    assert jsn[2]["name"] == "centered"
+    assert jsn[2]["initial"] == True
