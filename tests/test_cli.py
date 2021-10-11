@@ -162,3 +162,38 @@ def test_parameter_analysis():
     assert jsn[2]["type"] == "boolean"
     assert jsn[2]["name"] == "centered"
     assert jsn[2]["initial"] == True
+
+
+def test_parameter_file_input_output():
+    """
+    Test the CLI's ability to extract parameters from a script,
+    write them to a file, and then read them from the file again.
+    """
+    test_file = helpers.get_test_file_location("cube_params.py")
+
+    # Get a temporary output file location
+    temp_dir = tempfile.gettempdir()
+    temp_file = os.path.join(temp_dir, "temp_test_9.json")
+
+    # Save the parameters from the script to a file
+    command = ["python", "cq-cli.py", "--getparams", "true", "--infile", test_file, '--outfile', temp_file ]
+    out, err, exitcode = helpers.cli_call(command)
+
+    # Run the script with baseline parameters
+    command2 = ["python", "cq-cli.py", "--codec", "stl", "--infile", test_file, '--params', temp_file]
+    out2, err2, exitcode2 = helpers.cli_call(command2)
+
+    # Modify the parameters file
+    with open(temp_file, 'r') as file:
+        json_str = file.read()
+    json_dict = json.loads(json_str)
+    json_dict[0]['initial'] = 10
+    with open(temp_file, "w") as file:
+        file.writelines(json.dumps(json_dict))
+
+    # Run the command with the new parameters
+    command3 = ["python", "cq-cli.py", "--codec", "stl", "--infile", test_file, '--params', temp_file]
+    out3, err3, exitcode3 = helpers.cli_call(command3)
+
+    # Make sure that the file output changed
+    assert out2.decode() != out3.decode()

@@ -95,7 +95,12 @@ def get_params_from_file(param_json_path, errfile):
         # Read the contents of the file
         with open(param_json_path, 'r') as file:
             params_json = file.read()
-            param_dict = json.loads(params_json)
+            param_dict_array = json.loads(params_json)
+
+            # Load the array of parameters into the single JSON structure CQGI is expecting
+            param_dict = {}
+            for p in param_dict_array:
+                param_dict[p["name"]] = p["initial"]
     else:
         if errfile == None:
             print("Parameter file does not exist, default parameters will be used. ", file=sys.stderr)

@@ -1,3 +1,1 @@
-{
-    "width": 10
-}
+[{"type": "number", "name": "width", "initial": 1}, {"type": "string", "name": "tag_name", "initial": "cube"}, {"type": "boolean", "name": "centered", "initial": true}]
