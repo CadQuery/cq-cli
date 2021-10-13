@@ -255,7 +255,7 @@ def main():
                 file.write(json.dumps(params))
 
         # Check to see if the user only cared about getting the params
-        if codec == None:
+        if args.codec == None:
             return
 
     #
