@@ -230,8 +230,8 @@ def test_cadhub():
     assert err.decode() == ""
 
     # Make sure that the customizer.json file exists and has what we expect in it
-    with open(customizer_file_path, 'r') as file:
-        json_str = file.read()
+    with open(customizer_file_path, 'r') as file2:
+        json_str = file2.read()
     json_dict = json.loads(json_str)
     assert json_dict[0]['initial'] == 1
     assert json_dict[1]['initial'] == "cube"
@@ -242,8 +242,8 @@ def test_cadhub():
     out2, err2, exitcode2 = helpers.cli_call(command)
 
     # Compare the two files to make sure they are different
-    with open(output_file_path, 'r') as file:
-        stl_output_with_params = file.read()
-    with open(default_output_file_path, 'r') as file:
-        default_stl = file.read()
+    with open(output_file_path, 'r') as file3:
+        stl_output_with_params = file3.read()
+    with open(default_output_file_path, 'r') as file4:
+        default_stl = file4.read()
     assert stl_output_with_params != default_stl
