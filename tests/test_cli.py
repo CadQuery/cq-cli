@@ -174,14 +174,17 @@ def test_parameter_file_input_output():
     # Get a temporary output file location
     temp_dir = tempfile.gettempdir()
     temp_file = os.path.join(temp_dir, "temp_test_9.json")
+    temp_file_raw = os.path.join(temp_dir, "temp_test_10.json")
 
     # Save the parameters from the script to a file
-    command = ["python", "cq-cli.py", "--getparams", "true", "--infile", test_file, '--outfile', temp_file ]
+    command = ["python", "cq-cli.py", "--getparams", "true", "--infile", test_file, '--outfile', temp_file, '--rawparamsoutfile', temp_file_raw ]
     out, err, exitcode = helpers.cli_call(command)
 
     # Run the script with baseline parameters
-    command2 = ["python", "cq-cli.py", "--codec", "stl", "--infile", test_file, '--params', temp_file]
+    command2 = ["python", "cq-cli.py", "--codec", "stl", "--infile", test_file, '--params', temp_file_raw]
     out2, err2, exitcode2 = helpers.cli_call(command2)
+
+    assert err2.decode() == ""
 
     # Modify the parameters file
     with open(temp_file, 'r') as file:
@@ -197,3 +200,30 @@ def test_parameter_file_input_output():
 
     # Make sure that the file output changed
     assert out2.decode() != out3.decode()
+
+def test_raw_parameter_file_output():
+    """
+    Tests the CLI's ability to write the raw parameters to a JSON file.
+    """
+    test_file = helpers.get_test_file_location("cube_params.py")
+
+    # Get a temporary output file location
+    temp_dir = tempfile.gettempdir()
+    temp_file = os.path.join(temp_dir, "temp_test_11.json")
+    temp_file_raw = os.path.join(temp_dir, "temp_test_12.json")
+
+    # Save the parameters from the script to a file
+    command = ["python", "cq-cli.py", "--getparams", "true", "--infile", test_file, '--outfile', temp_file, '--rawparamsoutfile', temp_file_raw ]
+    out, err, exitcode = helpers.cli_call(command)
+
+    # Check the normal params file to make sure at least the first parameter value matches
+    with open(temp_file, 'r') as file:
+        json_str = file.read()
+    json_dict = json.loads(json_str)
+    assert json_dict[0]['initial'] == 1
+
+    # Check the raw params file to make sure at least the first parameter value matches
+    with open(temp_file_raw, 'r') as raw_file:
+        raw_json_str = raw_file.read()
+    raw_json_dict = json.loads(raw_json_str)
+    assert raw_json_dict['width'] == 1

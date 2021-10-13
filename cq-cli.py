@@ -99,8 +99,14 @@ def get_params_from_file(param_json_path, errfile):
 
             # Load the array of parameters into the single JSON structure CQGI is expecting
             param_dict = {}
-            for p in param_dict_array:
-                param_dict[p["name"]] = p["initial"]
+
+            # Account for parameters either being in an array or in a dict of their own
+            if type(param_dict_array) == list:
+                for p in param_dict_array:
+                    param_dict[p["name"]] = p["initial"]
+            elif type(param_dict_array) == dict:
+                for key in param_dict_array:
+                    param_dict[key] = param_dict_array[key]
     else:
         if errfile == None:
             print("Parameter file does not exist, default parameters will be used. ", file=sys.stderr)
@@ -115,6 +121,7 @@ def main():
     infile = None
     outfile = None
     errfile = None
+    rawparamsfile = None
     codec = None
     codec_module = None
     params = {}
@@ -129,6 +136,7 @@ def main():
     parser.add_argument('--getparams', dest='getparams', help='Analyzes the script and returns a JSON string with the parameter information.')
     parser.add_argument('--infile', dest='infile', help='The input CadQuery script to convert.')
     parser.add_argument('--outfile', dest='outfile', help='File to write the converted CadQuery output to. Prints to stdout if not specified.')
+    parser.add_argument('--rawparamsoutfile', dest='rawparamsfile', help='File to write the plain name/value parameter pairs to without the metadata.')
     parser.add_argument('--errfile', dest='errfile', help='File to write any errors to. Prints to stderr if not specified.')
     parser.add_argument('--params', dest='params', help='A colon and semicolon delimited string (no spaces) of key/value pairs representing variables and their values in the CadQuery script.  i.e. var1:10.0;var2:4.0;')
     parser.add_argument('--outputopts', dest='opts', help='A colon and semicolon delimited string (no spaces) of key/value pairs representing options to pass to the selected codec.  i.e. width:100;height:200;')
@@ -188,6 +196,7 @@ def main():
     if args.getparams == 'true':
         # Array of dictionaries that holds the parameter data
         params = []
+        raw_params = {}
 
         # Load the script string
         script_str = get_script_from_infile(args.infile, outfile, errfile)
@@ -229,6 +238,9 @@ def main():
             if param.default_value:
                 new_dict["initial"] = param.default_value
 
+            # Save the raw parameters in case the user wants to write those to a file
+            raw_params[param.name] = param.default_value
+
             # If there are values set for valid values via describe_parameter(), add those
             if param.valid_values:
                 new_dict["min"] = param.valid_values[0]
@@ -248,6 +260,9 @@ def main():
             with open(outfile, 'w') as file:
                 file.write(json.dumps(params))
 
+        if args.rawparamsfile != None:
+            with open(args.rawparamsfile, 'w') as file:
+                file.write(json.dumps(raw_params))
         return
 
     #
