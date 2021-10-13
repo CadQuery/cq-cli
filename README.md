@@ -89,7 +89,7 @@ cat /input/path/script.py | cq-cli.py --codec step | wc -l
 ```
 9. Extract parameter information from the input script. The outfile argument can also be left off to output the parameter JSON to stdout.
 ```
-./cq-cli.py --getparams true --infile /input/path/script.py --outfile /output/path/output.txt
+./cq-cli.py --getparams /output/path/params.json --infile /input/path/script.py
 ```
 10. Pass JSON parameter information from a file to be used in the script.
 ```

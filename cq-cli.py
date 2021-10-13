@@ -121,7 +121,6 @@ def main():
     infile = None
     outfile = None
     errfile = None
-    rawparamsfile = None
     codec = None
     codec_module = None
     params = {}
@@ -136,7 +135,6 @@ def main():
     parser.add_argument('--getparams', dest='getparams', help='Analyzes the script and returns a JSON string with the parameter information.')
     parser.add_argument('--infile', dest='infile', help='The input CadQuery script to convert.')
     parser.add_argument('--outfile', dest='outfile', help='File to write the converted CadQuery output to. Prints to stdout if not specified.')
-    parser.add_argument('--rawparamsoutfile', dest='rawparamsfile', help='File to write the plain name/value parameter pairs to without the metadata.')
     parser.add_argument('--errfile', dest='errfile', help='File to write any errors to. Prints to stderr if not specified.')
     parser.add_argument('--params', dest='params', help='A colon and semicolon delimited string (no spaces) of key/value pairs representing variables and their values in the CadQuery script.  i.e. var1:10.0;var2:4.0;')
     parser.add_argument('--outputopts', dest='opts', help='A colon and semicolon delimited string (no spaces) of key/value pairs representing options to pass to the selected codec.  i.e. width:100;height:200;')
@@ -193,10 +191,9 @@ def main():
     #
     # Analyzes the parameters that are available in the script.
     #
-    if args.getparams == 'true':
+    if args.getparams != None:
         # Array of dictionaries that holds the parameter data
         params = []
-        raw_params = {}
 
         # Load the script string
         script_str = get_script_from_infile(args.infile, outfile, errfile)
@@ -205,7 +202,7 @@ def main():
         # Set the PYTHONPATH variable to the current directory to allow module loading
         set_pythonpath_for_infile(args.infile)
 
-        # A repreentation of the CQ script with all the metadata attached
+        # A representation of the CQ script with all the metadata attached
         cq_model = None
         try:
             cq_model = cqgi.parse(script_str)
@@ -227,7 +224,7 @@ def main():
             elif param.varType.__name__ == "BooleanParameterType":
                 new_dict["type"] = "boolean"
 
-            # Save the name of the paramter
+            # Save the name of the parameter
             new_dict["name"] = param.name
 
             # If there is a description, save it
@@ -237,9 +234,6 @@ def main():
             # If there is an initial value, save it
             if param.default_value:
                 new_dict["initial"] = param.default_value
-
-            # Save the raw parameters in case the user wants to write those to a file
-            raw_params[param.name] = param.default_value
 
             # If there are values set for valid values via describe_parameter(), add those
             if param.valid_values:
@@ -254,16 +248,15 @@ def main():
             params.append(new_dict)
 
         # Write the converted output to the appropriate place based on the command line arguments
-        if outfile == None:
+        if args.getparams == 'true':
             print(json.dumps(params))
         else:
-            with open(outfile, 'w') as file:
+            with open(args.getparams, 'w') as file:
                 file.write(json.dumps(params))
 
-        if args.rawparamsfile != None:
-            with open(args.rawparamsfile, 'w') as file:
-                file.write(json.dumps(raw_params))
-        return
+        # Check to see if the user only cared about getting the params
+        if codec == None:
+            return
 
     #
     # Codec handling

@@ -174,14 +174,13 @@ def test_parameter_file_input_output():
     # Get a temporary output file location
     temp_dir = tempfile.gettempdir()
     temp_file = os.path.join(temp_dir, "temp_test_9.json")
-    temp_file_raw = os.path.join(temp_dir, "temp_test_10.json")
 
     # Save the parameters from the script to a file
-    command = ["python", "cq-cli.py", "--getparams", "true", "--infile", test_file, '--outfile', temp_file, '--rawparamsoutfile', temp_file_raw ]
+    command = ["python", "cq-cli.py", "--getparams", temp_file, "--infile", test_file]
     out, err, exitcode = helpers.cli_call(command)
 
     # Run the script with baseline parameters
-    command2 = ["python", "cq-cli.py", "--codec", "stl", "--infile", test_file, '--params', temp_file_raw]
+    command2 = ["python", "cq-cli.py", "--codec", "stl", "--infile", test_file, '--params', temp_file]
     out2, err2, exitcode2 = helpers.cli_call(command2)
 
     assert err2.decode() == ""
@@ -201,29 +200,50 @@ def test_parameter_file_input_output():
     # Make sure that the file output changed
     assert out2.decode() != out3.decode()
 
-def test_raw_parameter_file_output():
+
+def test_cadhub():
     """
-    Tests the CLI's ability to write the raw parameters to a JSON file.
+    Test to specifically make sure that cq-cli will work with CadHub.
     """
     test_file = helpers.get_test_file_location("cube_params.py")
 
-    # Get a temporary output file location
+    # Get a temporary output file locations
     temp_dir = tempfile.gettempdir()
-    temp_file = os.path.join(temp_dir, "temp_test_11.json")
-    temp_file_raw = os.path.join(temp_dir, "temp_test_12.json")
+    output_file_path = os.path.join(temp_dir, "output.stl")
+    default_output_file_path = os.path.join(temp_dir, "output_default.stl")
+    customizer_file_path = os.path.join(temp_dir, "customizer.json")
+    params_json_file_path = os.path.join(temp_dir, "params.json")
 
-    # Save the parameters from the script to a file
-    command = ["python", "cq-cli.py", "--getparams", "true", "--infile", test_file, '--outfile', temp_file, '--rawparamsoutfile', temp_file_raw ]
+    # Fake out the params.json file that would be coming from the user's interaction with CadHub
+    params_json = {}
+    params_json["width"] = 10
+    params_json["tag_name"] = "cube_default"
+    params_json["centered"] = False
+    with open(params_json_file_path, "w") as file:
+        file.writelines(json.dumps(params_json))
+
+    # Execute the script with the current parameters and save the new parameter metadata to the customizer file
+    command = ["python", "cq-cli.py", "--codec", "stl", "--infile", test_file, '--outfile', output_file_path, "--params", params_json_file_path, "--getparams", customizer_file_path ]
     out, err, exitcode = helpers.cli_call(command)
 
-    # Check the normal params file to make sure at least the first parameter value matches
-    with open(temp_file, 'r') as file:
+    # Make sure there was no error
+    assert err.decode() == ""
+
+    # Make sure that the customizer.json file exists and has what we expect in it
+    with open(customizer_file_path, 'r') as file:
         json_str = file.read()
     json_dict = json.loads(json_str)
     assert json_dict[0]['initial'] == 1
+    assert json_dict[1]['initial'] == "cube"
+    assert json_dict[2]['initial'] == True
 
-    # Check the raw params file to make sure at least the first parameter value matches
-    with open(temp_file_raw, 'r') as raw_file:
-        raw_json_str = raw_file.read()
-    raw_json_dict = json.loads(raw_json_str)
-    assert raw_json_dict['width'] == 1
+    # Write an STL using the default parameters so that we can compare it to what was generated with customized parameters
+    command = ["python", "cq-cli.py", "--codec", "stl", "--infile", test_file, '--outfile', default_output_file_path ]
+    out2, err2, exitcode2 = helpers.cli_call(command)
+
+    # Compare the two files to make sure they are different
+    with open(output_file_path, 'r') as file:
+        stl_output_with_params = file.read()
+    with open(default_output_file_path, 'r') as file:
+        default_stl = file.read()
+    assert stl_output_with_params != default_stl
