@@ -27,7 +27,7 @@ jobs:
         run: |
           pytest -v
   run-pytest-macos:
-    runs-on: macos-latest
+    runs-on: macos-11
     steps:
       - uses: actions/checkout@v2
         with:
