@@ -13,21 +13,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: conda-incubator/setup-miniconda@v2
-        with:
-          miniconda-version: "latest"
-          python-version: 3.8
-          activate-environment: test
       - name: Install CadQuery and pytest
         shell: bash --login {0}
         run: |
-          conda info
-          conda install -c cadquery -c conda-forge cadquery=master ocp=7.5.2 python=3.8
-          conda install -c anaconda pytest
+          pip install --upgrade pip
+          pip install --pre git+https://github.com/CadQuery/cadquery.git
+          pip install pytest
       - name: Run tests
         shell: bash --login {0}
         run: |
-          conda info
           pytest -v
   run-pytest-macos:
     runs-on: macos-latest
