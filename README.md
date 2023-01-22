@@ -132,6 +132,17 @@ For pyinstaller to know about the new dynamically loaded codec, it must be added
 
 A test is required when adding a codec to cq-cli, but is easy to add. Add a file named `test_[your codec name]_codec.py` in the tests directory, and add the test to it. `test_step_codec.py` would be a good template to base any new tests off of.
 
+### Exit Codes
+
+Applications can return a non-zero exit code to let the user know what went wrong. Below is a listing of the exit codes for cq-cli and what they mean.
+
+* **0:** Operation was successful with no errors detected.
+* **1:** A CadQuery script could not be read from the given `infile`.
+* **2:** There was a usage error with the parameters that were passed to cq-cli (too few parameters, not the correct ones, etc).
+* **3:** A codec for converting the results of the CadQuery script was not provided.
+* **100:** There was an unknown error while running the CadQuery script and obtaining a result (build error, possibly from OCCT).
+* **200:** There was an unknown error while running a codec to convert the results of the CadQuery script.
+
 ### pyinstaller
 
 If building cq-cli to run as a stand-alone app is required, there are two modes to build it in: `onefile` and `dir` (directory). onefile mode creates a single file for the app, which is easy to distribute but takes longer to start up run on each execution. dir mode creates a directory with numerous dependency files in it, including the cq-cli binary file, and starts up faster than the single file. However, the directory distribution can take up more than twice the disk space and can be messier to distribute. A PyInstaller spec file has been provided for both modes, and selecting between them only requires the addition of a command line argument. The commands to build in each type of mode are outlined below.

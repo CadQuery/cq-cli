@@ -35,6 +35,9 @@ def build_and_parse(script_str, params, errfile):
         else:
             print(str(out_tb), file=sys.stderr)
 
+        # Let the caller know what happened
+        sys.exit(100)
+
     # Return None here to prevent a failed build from slipping through
     return None
 
@@ -58,7 +61,7 @@ def get_script_from_infile(infile, outfile, errfile):
                 with open(errfile, 'w') as file:
                     file.write("Argument error: infile does not exist.")
 
-            return
+            return None
 
     # If there was an infile specified, read the contents of it, otherwise read from stdin
     if infile == None:
@@ -145,7 +148,7 @@ def main():
     # Make sure that the user has at least specified the validate or codec arguments
     if args.validate == None and args.getparams == None and args.codec == None:
         parser.print_help(sys.stderr)
-        return
+        sys.exit(2)
 
     #
     # Outfile handing
@@ -167,8 +170,7 @@ def main():
     # If the user wants to validate, do that and exit
     if args.validate == 'true':
         script_str = get_script_from_infile(args.infile, outfile, errfile)
-
-        if script_str == None: return
+        if script_str == None: sys.exit(1)
 
         # Set the PYTHONPATH variable to the current directory to allow module loading
         set_pythonpath_for_infile(args.infile)
@@ -184,7 +186,7 @@ def main():
             else:
                 print('validation_success')
 
-        return
+        return 0
 
     #
     # Parameter analysis
@@ -197,7 +199,7 @@ def main():
 
         # Load the script string
         script_str = get_script_from_infile(args.infile, outfile, errfile)
-        if script_str == None: return
+        if script_str == None: sys.exit(1)
 
         # Set the PYTHONPATH variable to the current directory to allow module loading
         set_pythonpath_for_infile(args.infile)
@@ -256,7 +258,7 @@ def main():
 
         # Check to see if the user only cared about getting the params
         if args.codec == None:
-            return
+            return 0
 
     #
     # Codec handling
@@ -269,7 +271,7 @@ def main():
         print("Please specify a codec. You have the following to choose from:")
         for key in loaded_codecs:
             print(key.replace('cq_codec_', ''))
-        return
+        sys.exit(3)
 
     for key in loaded_codecs:
         # Check to make sure that the requested codec exists
@@ -283,8 +285,7 @@ def main():
 
     # Grab the script input from a file path or stdin
     script_str = get_script_from_infile(infile, outfile, errfile)
-
-    if script_str == None: return
+    if script_str == None: sys.exit(1)
 
     # Set the PYTHONPATH variable to the current directory to allow module loading
     set_pythonpath_for_infile(args.infile)
@@ -348,7 +349,7 @@ def main():
 
         # If None was returned, it means the build failed and the exception has already been reported
         if build_result == None:
-            return
+            sys.exit(100)
     except Exception as err:
         # Write the file to the appropriate place based on what the user specified
         if errfile == None:
@@ -356,7 +357,7 @@ def main():
         else:
             with open(errfile, 'w') as file:
                 file.write(err)
-        return
+        sys.exit(100)
 
     #
     # Final build
@@ -384,6 +385,8 @@ def main():
         else:
             with open(errfile, 'w') as file:
                 file.write(str(out_tb))
+
+        sys.exit(200)
 
 if __name__ == "__main__":
     main()
