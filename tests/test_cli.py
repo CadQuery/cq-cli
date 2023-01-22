@@ -201,7 +201,7 @@ def test_parameter_file_input_output():
     assert out2.decode() != out3.decode()
 
 
-def test_cadhub():
+def test_params_stl_output():
     """
     Test to specifically make sure that cq-cli will work with CadHub.
     """
@@ -247,3 +247,27 @@ def test_cadhub():
     with open(default_output_file_path, 'r') as file4:
         default_stl = file4.read()
     assert stl_output_with_params != default_stl
+
+
+def test_exit_codes():
+    """
+    Tests a few exit codes to make sure the correct ones are
+    being returned.
+    """
+
+    # Test to make sure we get the correct exit code when no parameters are specified
+    command = ["python", "cq-cli.py" ]
+    out, err, exitcode = helpers.cli_call(command)
+
+    # Make sure that we got exit code 2
+    assert exitcode == 2
+
+    # We want to test a cube with fillets that are so large they cause a CAD kernel error
+    test_input_file = helpers.get_test_file_location("impossible_cube.py")
+
+    # Execute the script with the current parameters and save the new parameter metadata to the customizer file
+    command = ["python", "cq-cli.py", "--codec", "step", "--infile", test_input_file ]
+    out, err, exitcode = helpers.cli_call(command)
+
+    # Make sure that we got exit code 100 for a failed model build
+    assert exitcode == 100
