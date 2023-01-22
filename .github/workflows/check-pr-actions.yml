@@ -24,8 +24,11 @@ jobs:
         shell: bash --login {0}
         run: |
           conda info
-          conda install -c cadquery -c conda-forge cadquery=master ocp=7.6.3 python=3.8
-          conda install -c anaconda pytest
+          pip install --upgrade pip
+          pip install --pre git+https://github.com/CadQuery/cadquery.git
+          pip install pytest
+          # conda install -c cadquery -c conda-forge cadquery=master ocp=7.6.3 python=3.8
+          # conda install -c anaconda pytest
       - name: Run tests
         shell: bash --login {0}
         run: |
@@ -46,8 +49,11 @@ jobs:
         shell: bash --login {0}
         run: |
           conda info
-          conda install -c cadquery -c conda-forge cadquery=master ocp=7.6.3 python=3.8
-          conda install -c anaconda pytest
+          pip install --upgrade pip
+          pip install --pre git+https://github.com/CadQuery/cadquery.git
+          pip install pytest
+          # conda install -c cadquery -c conda-forge cadquery=master ocp=7.6.3 python=3.8
+          # conda install -c anaconda pytest
       - name: Run tests
         shell: bash --login {0}
         run: |
@@ -68,8 +74,11 @@ jobs:
         shell: pwsh
         run: |
           conda info
-          conda install -c cadquery -c conda-forge cadquery=master ocp=7.6.3 python=3.8 libnetcdf=4.7.4
-          conda install -c anaconda pytest
+          pip install --upgrade pip
+          pip install --pre git+https://github.com/CadQuery/cadquery.git
+          pip install pytest
+          # conda install -c cadquery -c conda-forge cadquery=master ocp=7.6.3 python=3.8 libnetcdf=4.7.4
+          # conda install -c anaconda pytest
       - name: Run tests
         shell: pwsh
         run: |
