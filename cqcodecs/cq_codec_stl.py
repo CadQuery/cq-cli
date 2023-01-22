@@ -19,11 +19,11 @@ def convert(build_result, output_file=None, error_file=None, output_opts=None):
 
     # The exporters will add extra output that we do not want, so suppress it
     with helpers.suppress_stdout_stderr():
-        # Put the STEP output into the temp file
-        exporters.export(build_result.results[0].shape, temp_file, exporters.ExportTypes.STL, tolerance=linearDeflection, angularTolerance=angularDeflection)
+        # Put the STL output into the temp file
+        build_result.results[0].shape.val().exportStl(temp_file, linearDeflection, angularDeflection, True)
 
-    # Read the STEP output back in
+    # Read the STL output back in
     with open(temp_file, 'r') as file:
-        step_str = file.read()
+        stl_str = file.read()
 
-    return step_str
+    return stl_str
