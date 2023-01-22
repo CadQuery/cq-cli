@@ -25,7 +25,6 @@ jobs:
       - name: Run tests
         shell: bash --login {0}
         run: |
-          conda info
           pytest -v
   run-pytest-macos:
     runs-on: macos-latest
@@ -36,13 +35,13 @@ jobs:
       - name: Install CadQuery and pytest
         shell: bash --login {0}
         run: |
-          pip install --upgrade pip
-          pip install --pre git+https://github.com/CadQuery/cadquery.git
-          pip install pytest
+          python3 -m ensurepip
+          pip3 install --upgrade pip
+          pip3 install --pre git+https://github.com/CadQuery/cadquery.git
+          pip3 install pytest
       - name: Run tests
         shell: bash --login {0}
         run: |
-          conda info
           pytest -v
   run-pytest-win:
     runs-on: "windows-latest"
@@ -59,5 +58,4 @@ jobs:
       - name: Run tests
         shell: pwsh
         run: |
-          conda info 
           pytest -v
