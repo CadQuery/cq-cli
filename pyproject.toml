@@ -1,0 +1,25 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "cq-cli"
+version = "2.1.0"
+license = "Apache-2.0"
+authors = [
+  { name="Jeremy Wright" },
+]
+description = "Command Line Interface for executing CadQuery scripts and converting their output to another format."
+readme = "README.md"
+requires-python = ">=3.8"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+]
+dependencies = [
+  'cadquery >= 2.3.1',
+]
+
+[project.urls]
+"Homepage" = "https://github.com/CadQuery/cq-cli"
+"Bug Tracker" = "https://github.com/CadQuery/cq-cli/issues"
