@@ -146,7 +146,8 @@ def main():
     args = parser.parse_args()
 
     # Make sure that the user has at least specified the validate or codec arguments
-    if args.validate == None and args.getparams == None and args.codec == None:
+    if args.validate == None and args.infile == None and args.codec == None and args.outfile == None:
+        print("Please specify at least the validate option plus an infile, or an infile and an outfile or a codec.")
         parser.print_help(sys.stderr)
         sys.exit(2)
 
@@ -266,9 +267,18 @@ def main():
     # Save the requested codec for later
     codec = args.codec
 
+    # Attempt to auto-detect the codec if the user has not set the option
+    if args.outfile != None and args.codec == None:
+        # Determine the codec from the file extension
+        codec_temp = args.outfile.split('.')[-1]
+        if args.outfile != None and codec_temp != None:
+            codec_temp = "cq_codec_" + codec_temp
+            if codec_temp in loaded_codecs:
+                codec = codec_temp
+
     # If the user has not supplied a codec, they need to be validating the script
-    if (codec == 'help' or codec == None) and (args.validate == None or args.validate == 'false'):
-        print("Please specify a codec. You have the following to choose from:")
+    if (codec == 'help' or (codec == None and args.outfile == None)) and (args.validate == None or args.validate == 'false'):
+        print("Please specify a valid codec. You have the following to choose from:")
         for key in loaded_codecs:
             print(key.replace('cq_codec_', ''))
         sys.exit(3)

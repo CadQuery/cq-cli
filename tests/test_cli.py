@@ -10,7 +10,7 @@ def test_no_cli_arguments():
     command = ["python", "cq-cli.py"]
     out, err, exitcode = helpers.cli_call(command)
 
-    assert err.decode().split('\n')[0].startswith("usage")
+    assert out.decode().split('\n')[0].startswith("Please specify at least the validate option")
 
 def test_codec_and_infile_arguments_file_nonexistent():
     """
@@ -32,7 +32,7 @@ def test_codec_and_infile_arguments():
     command = ["python", "cq-cli.py", "--codec", "step", "--infile", test_file]
     out, err, exitcode = helpers.cli_call(command)
 
-    assert out.decode().split('\n')[9].replace('\r', '') == "ISO-10303-21;"
+    assert out.decode().split('\n')[0].replace('\r', '') == "ISO-10303-21;"
 
 def test_codec_infile_and_outfile_arguments():
     """
