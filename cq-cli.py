@@ -271,13 +271,20 @@ def main():
     if args.outfile != None and args.codec == None:
         # Determine the codec from the file extension
         codec_temp = args.outfile.split('.')[-1]
-        if args.outfile != None and codec_temp != None:
+        if codec_temp != None:
             codec_temp = "cq_codec_" + codec_temp
             if codec_temp in loaded_codecs:
                 codec = codec_temp
 
     # If the user has not supplied a codec, they need to be validating the script
-    if (codec == 'help' or (codec == None and args.outfile == None)) and (args.validate == None or args.validate == 'false'):
+    if (codec == None and args.outfile == None) and (args.validate == None or args.validate == 'false'):
+        print("Please specify a valid codec. You have the following to choose from:")
+        for key in loaded_codecs:
+            print(key.replace('cq_codec_', ''))
+        sys.exit(3)
+
+    # If the codec is None at this point, the user specified an invalid codec
+    if codec == None:
         print("Please specify a valid codec. You have the following to choose from:")
         for key in loaded_codecs:
             print(key.replace('cq_codec_', ''))
