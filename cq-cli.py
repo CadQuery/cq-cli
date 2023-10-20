@@ -121,6 +121,7 @@ def get_params_from_file(param_json_path, errfile):
 
 
 def main():
+    outfile = None
     errfile = None
     codec_module = None
     params = {}
