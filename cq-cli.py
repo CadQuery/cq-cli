@@ -390,8 +390,14 @@ def main():
             if outfile == None:
                 print(converted)
             else:
-                with open(outfile, 'w') as file:
-                    file.write(converted)
+                if isinstance(converted, str):
+                    with open(outfile, 'w') as file:
+                        file.write(converted)
+                elif isinstance(converted, (bytes, bytearray)):
+                    with open(outfile, 'wb') as file:
+                        file.write(converted)
+                else:
+                    raise TypeError("Expected converted output to be str, bytes, or bytearray. Got '%s'" % type(converted).__name__)
 
     except Exception:
         out_tb = traceback.format_exc()
