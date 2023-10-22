@@ -121,10 +121,8 @@ def get_params_from_file(param_json_path, errfile):
 
 
 def main():
-    infile = None
     outfile = None
     errfile = None
-    codec = None
     codec_module = None
     params = {}
     output_opts = {}
@@ -134,14 +132,14 @@ def main():
 
     # Parse the command line arguments
     parser = argparse.ArgumentParser(description='Command line utility for converting CadQuery script output to various other output formats.')
-    parser.add_argument('--codec', dest='codec', help='The codec to use when converting the CadQuery output. Must match the name of a codec file in the cqcodecs directory.')
-    parser.add_argument('--getparams', dest='getparams', help='Analyzes the script and returns a JSON string with the parameter information.')
-    parser.add_argument('--infile', dest='infile', help='The input CadQuery script to convert.')
-    parser.add_argument('--outfile', dest='outfile', help='File to write the converted CadQuery output to. Prints to stdout if not specified.')
-    parser.add_argument('--errfile', dest='errfile', help='File to write any errors to. Prints to stderr if not specified.')
-    parser.add_argument('--params', dest='params', help='A colon and semicolon delimited string (no spaces) of key/value pairs representing variables and their values in the CadQuery script.  i.e. var1:10.0;var2:4.0;')
+    parser.add_argument('--codec', help='The codec to use when converting the CadQuery output. Must match the name of a codec file in the cqcodecs directory.')
+    parser.add_argument('--getparams', help='Analyzes the script and returns a JSON string with the parameter information.')
+    parser.add_argument('--infile', help='The input CadQuery script to convert.')
+    parser.add_argument('--outfile', help='File to write the converted CadQuery output to. Prints to stdout if not specified.')
+    parser.add_argument('--errfile', help='File to write any errors to. Prints to stderr if not specified.')
+    parser.add_argument('--params', help='A colon and semicolon delimited string (no spaces) of key/value pairs representing variables and their values in the CadQuery script.  i.e. var1:10.0;var2:4.0;')
     parser.add_argument('--outputopts', dest='opts', help='A colon and semicolon delimited string (no spaces) of key/value pairs representing options to pass to the selected codec.  i.e. width:100;height:200;')
-    parser.add_argument('--validate', dest='validate', help='Setting to true forces the CLI to only parse and validate the script and not produce converted output.')
+    parser.add_argument('--validate', help='Setting to true forces the CLI to only parse and validate the script and not produce converted output.')
 
     args = parser.parse_args()
 
