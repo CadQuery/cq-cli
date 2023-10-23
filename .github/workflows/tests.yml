@@ -8,11 +8,11 @@ on:
       - main
 jobs:
   run-pytest-linux:
-    runs-on: ubuntu-latest
     strategy:
       matrix:
         python-version: ["3.10"]
         os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v2
       - name: Install CadQuery and pytest
