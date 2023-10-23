@@ -21,6 +21,8 @@ jobs:
           pip install --upgrade pip
           pip install -e .
           pip install -e .[dev]
+        shell: bash {0}
       - name: Run tests
         run: |
           pytest -v
+        shell: bash {0}
