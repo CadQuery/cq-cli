@@ -9,7 +9,7 @@ def test_svg_codec():
 
     command = [
         "python",
-        "cq-cli.py",
+        "src/cq_cli/cq_cli.py",
         "--codec",
         "svg",
         "--infile",

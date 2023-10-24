@@ -7,7 +7,14 @@ def test_threejs_codec():
     """
     test_file = helpers.get_test_file_location("cube.py")
 
-    command = ["python", "cq-cli.py", "--codec", "threejs", "--infile", test_file]
+    command = [
+        "python",
+        "src/cq_cli/cq_cli.py",
+        "--codec",
+        "threejs",
+        "--infile",
+        test_file,
+    ]
     out, err, exitcode = helpers.cli_call(command)
     print("Output New: " + str(out.decode()))
     print("Error: " + str(err))

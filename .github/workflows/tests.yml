@@ -15,6 +15,9 @@ jobs:
         os: [ubuntu-latest, windows-latest, macos-latest]
     runs-on: ${{ matrix.os }}
     steps:
+      - name: Install Dependencies (Linux)
+        run: sudo apt-get update && sudo apt install -y libgl1-mesa-glx
+        if: matrix.os == 'ubuntu-latest'
       - uses: actions/checkout@v2
       - name: Install CadQuery and pytest
         run: |
