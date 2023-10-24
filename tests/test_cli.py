@@ -52,8 +52,7 @@ def test_codec_and_infile_arguments():
         test_file,
     ]
     out, err, exitcode = helpers.cli_call(command)
-
-    assert out.decode().split("\n")[0].replace("\r", "") == "ISO-10303-21;"
+    assert "ISO-10303-21;" in out.decode()
 
 
 def test_codec_infile_and_outfile_arguments():

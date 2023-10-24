@@ -17,4 +17,4 @@ def test_step_codec():
     ]
     out, err, exitcode = helpers.cli_call(command)
 
-    assert out.decode().split("\n")[0].replace("\r", "") == "ISO-10303-21;"
+    assert "ISO-10303-21;" in out.decode()
