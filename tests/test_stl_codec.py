@@ -8,7 +8,14 @@ def test_stl_codec():
     """
     test_file = helpers.get_test_file_location("cube.py")
 
-    command = ["python", "cq-cli.py", "--codec", "stl", "--infile", test_file]
+    command = [
+        "python",
+        "src/cq_cli/cq_cli.py",
+        "--codec",
+        "stl",
+        "--infile",
+        test_file,
+    ]
     out, err, exitcode = helpers.cli_call(command)
 
     assert out.decode().split("\n")[0].replace("\r", "") == "solid "
@@ -20,7 +27,14 @@ def test_stl_codec_quality():
     """
     test_file = helpers.get_test_file_location("sphere.py")
 
-    command = ["python", "cq-cli.py", "--codec", "stl", "--infile", test_file]
+    command = [
+        "python",
+        "src/cq_cli/cq_cli.py",
+        "--codec",
+        "stl",
+        "--infile",
+        test_file,
+    ]
     out, err, exitcode = helpers.cli_call(command)
 
     # Keep track of the number of lines for each STL as an approximate measure of quality
@@ -29,7 +43,7 @@ def test_stl_codec_quality():
     # Attempt to adjust the quality of the resulting STL
     command2 = [
         "python",
-        "cq-cli.py",
+        "src/cq_cli/cq_cli.py",
         "--codec",
         "stl",
         "--infile",
