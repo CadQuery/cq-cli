@@ -1,0 +1,36 @@
+name: pyinstaller-build
+on:
+  workflow_dispatch:
+    inputs:
+      type:
+        description: 'Whether to build a single file (onefile) or directory (dir) dist'
+        required: true
+        default: 'dir'
+jobs:
+  build-linux:
+    runs-on: ubuntu-18.04
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+    # - uses: conda-incubator/setup-miniconda@v2
+    #   with:
+    #     miniconda-version: "latest"
+    #     auto-update-conda: true
+    #     python-version: 3.8
+    #     activate-environment: test
+    - name: Install dependencies
+      run: |
+        pip install --upgrade pip
+        pip --version
+        pip install -e .
+        pip install pyinstaller
+        pip install path
+    - name: Run PyInstaller build
+      run: |
+        pyinstaller pyinstaller.spec ${{ github.event.inputs.type }}
+    - uses: actions/upload-artifact@v2
+      with:
+        name: cq-cli-Linux-x86_64
+        path: dist
