@@ -1,4 +1,10 @@
 #!/usr/bin/env python3
+
+# surprisingly, this seems to fix issues on macOS - it shouldn't be necessary
+# for any python3 installation, but this program fails to run on macOS without
+# this import.
+from __future__ import print_function
+
 import os
 import sys
 import argparse
