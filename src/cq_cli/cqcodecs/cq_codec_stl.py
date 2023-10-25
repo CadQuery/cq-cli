@@ -1,7 +1,7 @@
 import os, tempfile
 from cadquery import exporters
 import cadquery as cq
-import cqcodecs.codec_helpers as helpers
+import cq_cli.cqcodecs.codec_helpers as helpers
 
 
 def convert(build_result, output_file=None, error_file=None, output_opts=None):

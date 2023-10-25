@@ -21,7 +21,7 @@ dependencies = [
 ]
 
 [project.scripts]
-cq-cli = "cq_cli:main"
+cq-cli = "cq_cli.cq_cli:main"
 
 [project.optional-dependencies]
 dev = [
@@ -38,4 +38,4 @@ dev = [
 allow-direct-references = true
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/cq_cli/cqcodecs"]
+packages = ["src/cq_cli"]
