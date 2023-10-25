@@ -10,7 +10,7 @@ def test_stl_codec():
 
     command = [
         "python",
-        "src/cq_cli/cq_cli.py",
+        "src/cq_cli/main.py",
         "--codec",
         "stl",
         "--infile",
@@ -29,7 +29,7 @@ def test_stl_codec_quality():
 
     command = [
         "python",
-        "src/cq_cli/cq_cli.py",
+        "src/cq_cli/main.py",
         "--codec",
         "stl",
         "--infile",
@@ -43,7 +43,7 @@ def test_stl_codec_quality():
     # Attempt to adjust the quality of the resulting STL
     command2 = [
         "python",
-        "src/cq_cli/cq_cli.py",
+        "src/cq_cli/main.py",
         "--codec",
         "stl",
         "--infile",

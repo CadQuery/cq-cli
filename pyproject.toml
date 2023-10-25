@@ -21,7 +21,7 @@ dependencies = [
 ]
 
 [project.scripts]
-cq-cli = "cq_cli.cq_cli:main"
+cq-cli = "cq_cli.main:main"
 
 [project.optional-dependencies]
 dev = [

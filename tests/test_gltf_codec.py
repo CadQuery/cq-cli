@@ -13,7 +13,7 @@ def test_gltf_codec():
 
     command = [
         "python",
-        "src/cq_cli/cq_cli.py",
+        "src/cq_cli/main.py",
         "--codec",
         "gltf",
         "--infile",

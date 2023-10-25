@@ -8,7 +8,7 @@ def test_no_cli_arguments():
     """
     Runs the CLI with no arguments, which you should not do unless you want the usage message.
     """
-    command = ["python", "src/cq_cli/cq_cli.py"]
+    command = ["python", "src/cq_cli/main.py"]
     out, err, exitcode = helpers.cli_call(command)
 
     assert (
@@ -26,7 +26,7 @@ def test_codec_and_infile_arguments_file_nonexistent():
 
     command = [
         "python",
-        "src/cq_cli/cq_cli.py",
+        "src/cq_cli/main.py",
         "--codec",
         "step",
         "--infile",
@@ -45,7 +45,7 @@ def test_codec_and_infile_arguments():
 
     command = [
         "python",
-        "src/cq_cli/cq_cli.py",
+        "src/cq_cli/main.py",
         "--codec",
         "step",
         "--infile",
@@ -67,7 +67,7 @@ def test_codec_infile_and_outfile_arguments():
 
     command = [
         "python",
-        "src/cq_cli/cq_cli.py",
+        "src/cq_cli/main.py",
         "--codec",
         "step",
         "--infile",
@@ -98,7 +98,7 @@ def test_codec_infile_outfile_errfile_arguments():
 
     command = [
         "python",
-        "src/cq_cli/cq_cli.py",
+        "src/cq_cli/main.py",
         "--codec",
         "step",
         "--infile",
@@ -130,7 +130,7 @@ def test_parameter_file():
 
     command = [
         "python",
-        "src/cq_cli/cq_cli.py",
+        "src/cq_cli/main.py",
         "--codec",
         "step",
         "--infile",
@@ -161,7 +161,7 @@ def test_parameter_json_string():
 
     command = [
         "python",
-        "src/cq_cli/cq_cli.py",
+        "src/cq_cli/main.py",
         "--codec",
         "step",
         "--infile",
@@ -192,7 +192,7 @@ def test_parameter_delimited_string():
 
     command = [
         "python",
-        "src/cq_cli/cq_cli.py",
+        "src/cq_cli/main.py",
         "--codec",
         "step",
         "--infile",
@@ -219,7 +219,7 @@ def test_parameter_analysis():
 
     command = [
         "python",
-        "src/cq_cli/cq_cli.py",
+        "src/cq_cli/main.py",
         "--getparams",
         "true",
         "--infile",
@@ -260,7 +260,7 @@ def test_parameter_file_input_output():
     # Save the parameters from the script to a file
     command = [
         "python",
-        "src/cq_cli/cq_cli.py",
+        "src/cq_cli/main.py",
         "--getparams",
         temp_file,
         "--infile",
@@ -271,7 +271,7 @@ def test_parameter_file_input_output():
     # Run the script with baseline parameters
     command2 = [
         "python",
-        "src/cq_cli/cq_cli.py",
+        "src/cq_cli/main.py",
         "--codec",
         "stl",
         "--infile",
@@ -294,7 +294,7 @@ def test_parameter_file_input_output():
     # Run the command with the new parameters
     command3 = [
         "python",
-        "src/cq_cli/cq_cli.py",
+        "src/cq_cli/main.py",
         "--codec",
         "stl",
         "--infile",
@@ -332,7 +332,7 @@ def test_params_stl_output():
     # Execute the script with the current parameters and save the new parameter metadata to the customizer file
     command = [
         "python",
-        "src/cq_cli/cq_cli.py",
+        "src/cq_cli/main.py",
         "--codec",
         "stl",
         "--infile",
@@ -360,7 +360,7 @@ def test_params_stl_output():
     # Write an STL using the default parameters so that we can compare it to what was generated with customized parameters
     command = [
         "python",
-        "src/cq_cli/cq_cli.py",
+        "src/cq_cli/main.py",
         "--codec",
         "stl",
         "--infile",
@@ -385,7 +385,7 @@ def test_exit_codes():
     """
 
     # Test to make sure we get the correct exit code when no parameters are specified
-    command = ["python", "src/cq_cli/cq_cli.py"]
+    command = ["python", "src/cq_cli/main.py"]
     out, err, exitcode = helpers.cli_call(command)
 
     # Make sure that we got exit code 2
@@ -397,7 +397,7 @@ def test_exit_codes():
     # Execute the script with the current parameters and save the new parameter metadata to the customizer file
     command = [
         "python",
-        "src/cq_cli/cq_cli.py",
+        "src/cq_cli/main.py",
         "--codec",
         "step",
         "--infile",

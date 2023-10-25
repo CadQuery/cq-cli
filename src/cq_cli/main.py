@@ -7,13 +7,17 @@ from __future__ import print_function
 
 import os
 import sys
+
+# Add parent directory to path so that `import cq_cli.* resolves correctly.
+sys.path.append(os.path.dirname(__file__) + "/..")
+
 import argparse
 import cadquery as cq
 from cadquery import cqgi
 import fileinput
 import traceback
 import json
-from cqcodecs import loader
+from cq_cli.cqcodecs import loader
 
 
 def build_and_parse(script_str, params, errfile):
