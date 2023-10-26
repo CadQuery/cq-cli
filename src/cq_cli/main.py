@@ -1,19 +1,30 @@
 #!/usr/bin/env python3
+
+# surprisingly, this seems to fix issues on macOS - it shouldn't be necessary
+# for any python3 installation, but this program fails to run on macOS without
+# this import.
+from __future__ import print_function
+
 import os
 import sys
+
+# Add parent directory to path so that `import cq_cli.* resolves correctly.
+sys.path.append(os.path.dirname(__file__) + "/..")
+
 import argparse
 import cadquery as cq
 from cadquery import cqgi
 import fileinput
 import traceback
 import json
-from cqcodecs import loader
+from cq_cli.cqcodecs import loader
+
 
 def build_and_parse(script_str, params, errfile):
     """
     Uses CQGI to parse and build a script, substituting in parameters if any were supplied.
     """
-        # We need to do a broad try/catch to let the user know if something higher-level fails
+    # We need to do a broad try/catch to let the user know if something higher-level fails
     try:
         # Do the CQGI handling of the script here and, if successful, pass the build result to the codec
         cqModel = cqgi.parse(script_str)
@@ -22,7 +33,7 @@ def build_and_parse(script_str, params, errfile):
         # Handle the case of the build not being successful, otherwise pass the codec the build result
         if not build_result.success:
             # Re-throw the exception so that it will be caught and formatted correctly
-            raise(build_result.exception)
+            raise (build_result.exception)
         else:
             return build_result
     except Exception:
@@ -30,7 +41,7 @@ def build_and_parse(script_str, params, errfile):
 
         # If there was an error file specified write to that, otherwise send it to stderr
         if errfile != None:
-            with open(errfile, 'w') as file:
+            with open(errfile, "w") as file:
                 file.write(str(out_tb))
         else:
             print(str(out_tb), file=sys.stderr)
@@ -40,6 +51,7 @@ def build_and_parse(script_str, params, errfile):
 
     # Return None here to prevent a failed build from slipping through
     return None
+
 
 def get_script_from_infile(infile, outfile, errfile):
     """
@@ -58,7 +70,7 @@ def get_script_from_infile(infile, outfile, errfile):
             if errfile == None:
                 print("infile does not exist.", file=sys.stderr)
             else:
-                with open(errfile, 'w') as file:
+                with open(errfile, "w") as file:
                     file.write("Argument error: infile does not exist.")
 
             return None
@@ -68,7 +80,7 @@ def get_script_from_infile(infile, outfile, errfile):
         # Grab the string from stdin
         script_str = sys.stdin.read()
     else:
-        with open(infile, 'r') as file:
+        with open(infile, "r") as file:
             script_str = file.read()
 
     return script_str
@@ -96,7 +108,7 @@ def get_params_from_file(param_json_path, errfile):
     # Make sure that the file exists
     if os.path.isfile(param_json_path):
         # Read the contents of the file
-        with open(param_json_path, 'r') as file:
+        with open(param_json_path, "r") as file:
             params_json = file.read()
             param_dict_array = json.loads(params_json)
 
@@ -112,10 +124,15 @@ def get_params_from_file(param_json_path, errfile):
                     param_dict[key] = param_dict_array[key]
     else:
         if errfile == None:
-            print("Parameter file does not exist, default parameters will be used. ", file=sys.stderr)
+            print(
+                "Parameter file does not exist, default parameters will be used. ",
+                file=sys.stderr,
+            )
         else:
-            with open(errfile, 'w') as file:
-                file.write("Argument error: Parameter file does not exist, default parameters will be used.")
+            with open(errfile, "w") as file:
+                file.write(
+                    "Argument error: Parameter file does not exist, default parameters will be used."
+                )
 
     return param_dict
 
@@ -131,21 +148,52 @@ def main():
     loaded_codecs = loader.load_codecs()
 
     # Parse the command line arguments
-    parser = argparse.ArgumentParser(description='Command line utility for converting CadQuery script output to various other output formats.')
-    parser.add_argument('--codec', help='The codec to use when converting the CadQuery output. Must match the name of a codec file in the cqcodecs directory.')
-    parser.add_argument('--getparams', help='Analyzes the script and returns a JSON string with the parameter information.')
-    parser.add_argument('--infile', help='The input CadQuery script to convert.')
-    parser.add_argument('--outfile', help='File to write the converted CadQuery output to. Prints to stdout if not specified.')
-    parser.add_argument('--errfile', help='File to write any errors to. Prints to stderr if not specified.')
-    parser.add_argument('--params', help='A colon and semicolon delimited string (no spaces) of key/value pairs representing variables and their values in the CadQuery script.  i.e. var1:10.0;var2:4.0;')
-    parser.add_argument('--outputopts', dest='opts', help='A colon and semicolon delimited string (no spaces) of key/value pairs representing options to pass to the selected codec.  i.e. width:100;height:200;')
-    parser.add_argument('--validate', help='Setting to true forces the CLI to only parse and validate the script and not produce converted output.')
+    parser = argparse.ArgumentParser(
+        description="Command line utility for converting CadQuery script output to various other output formats."
+    )
+    parser.add_argument(
+        "--codec",
+        help="The codec to use when converting the CadQuery output. Must match the name of a codec file in the cqcodecs directory.",
+    )
+    parser.add_argument(
+        "--getparams",
+        help="Analyzes the script and returns a JSON string with the parameter information.",
+    )
+    parser.add_argument("--infile", help="The input CadQuery script to convert.")
+    parser.add_argument(
+        "--outfile",
+        help="File to write the converted CadQuery output to. Prints to stdout if not specified.",
+    )
+    parser.add_argument(
+        "--errfile",
+        help="File to write any errors to. Prints to stderr if not specified.",
+    )
+    parser.add_argument(
+        "--params",
+        help="A colon and semicolon delimited string (no spaces) of key/value pairs representing variables and their values in the CadQuery script.  i.e. var1:10.0;var2:4.0;",
+    )
+    parser.add_argument(
+        "--outputopts",
+        dest="opts",
+        help="A colon and semicolon delimited string (no spaces) of key/value pairs representing options to pass to the selected codec.  i.e. width:100;height:200;",
+    )
+    parser.add_argument(
+        "--validate",
+        help="Setting to true forces the CLI to only parse and validate the script and not produce converted output.",
+    )
 
     args = parser.parse_args()
 
     # Make sure that the user has at least specified the validate or codec arguments
-    if args.validate == None and args.infile == None and args.codec == None and args.outfile == None:
-        print("Please specify at least the validate option plus an infile, or an infile and an outfile or a codec.")
+    if (
+        args.validate == None
+        and args.infile == None
+        and args.codec == None
+        and args.outfile == None
+    ):
+        print(
+            "Please specify at least the validate option plus an infile, or an infile and an outfile or a codec."
+        )
         parser.print_help(sys.stderr)
         sys.exit(2)
 
@@ -167,9 +215,10 @@ def main():
     # Validation handling
     #
     # If the user wants to validate, do that and exit
-    if args.validate == 'true':
+    if args.validate == "true":
         script_str = get_script_from_infile(args.infile, outfile, errfile)
-        if script_str == None: sys.exit(1)
+        if script_str == None:
+            sys.exit(1)
 
         # Set the PYTHONPATH variable to the current directory to allow module loading
         set_pythonpath_for_infile(args.infile)
@@ -180,10 +229,10 @@ def main():
         if build_result != None and build_result.success:
             # Let the user know that the validation was a success
             if outfile != None:
-                with open(outfile, 'w') as file:
-                    file.write('validation_success')
+                with open(outfile, "w") as file:
+                    file.write("validation_success")
             else:
-                print('validation_success')
+                print("validation_success")
 
         return 0
 
@@ -198,7 +247,8 @@ def main():
 
         # Load the script string
         script_str = get_script_from_infile(args.infile, outfile, errfile)
-        if script_str == None: sys.exit(1)
+        if script_str == None:
+            sys.exit(1)
 
         # Set the PYTHONPATH variable to the current directory to allow module loading
         set_pythonpath_for_infile(args.infile)
@@ -249,10 +299,10 @@ def main():
             params.append(new_dict)
 
         # Write the converted output to the appropriate place based on the command line arguments
-        if args.getparams == 'true':
+        if args.getparams == "true":
             print(json.dumps(params))
         else:
-            with open(args.getparams, 'w') as file:
+            with open(args.getparams, "w") as file:
                 file.write(json.dumps(params))
 
         # Check to see if the user only cared about getting the params
@@ -268,24 +318,26 @@ def main():
     # Attempt to auto-detect the codec if the user has not set the option
     if args.outfile != None and args.codec == None:
         # Determine the codec from the file extension
-        codec_temp = args.outfile.split('.')[-1]
+        codec_temp = args.outfile.split(".")[-1]
         if codec_temp != None:
             codec_temp = "cq_codec_" + codec_temp
             if codec_temp in loaded_codecs:
                 codec = codec_temp
 
     # If the user has not supplied a codec, they need to be validating the script
-    if (codec == None and args.outfile == None) and (args.validate == None or args.validate == 'false'):
+    if (codec == None and args.outfile == None) and (
+        args.validate == None or args.validate == "false"
+    ):
         print("Please specify a valid codec. You have the following to choose from:")
         for key in loaded_codecs:
-            print(key.replace('cq_codec_', ''))
+            print(key.replace("cq_codec_", ""))
         sys.exit(3)
 
     # If the codec is None at this point, the user specified an invalid codec
     if codec == None:
         print("Please specify a valid codec. You have the following to choose from:")
         for key in loaded_codecs:
-            print(key.replace('cq_codec_', ''))
+            print(key.replace("cq_codec_", ""))
         sys.exit(3)
 
     for key in loaded_codecs:
@@ -300,7 +352,8 @@ def main():
 
     # Grab the script input from a file path or stdin
     script_str = get_script_from_infile(infile, outfile, errfile)
-    if script_str == None: sys.exit(1)
+    if script_str == None:
+        sys.exit(1)
 
     # Set the PYTHONPATH variable to the current directory to allow module loading
     set_pythonpath_for_infile(args.infile)
@@ -311,7 +364,13 @@ def main():
     # Check whether any parameters were passed
     if args.params != None:
         # We have been passed a directory
-        if args.params.startswith('/') or args.params.startswith('.') or args.params.startswith('..') or args.params.startswith('~') or args.params[1] == ':':
+        if (
+            args.params.startswith("/")
+            or args.params.startswith(".")
+            or args.params.startswith("..")
+            or args.params.startswith("~")
+            or args.params[1] == ":"
+        ):
             # Load the parameters dictionary from the file
             file_params = get_params_from_file(args.params, errfile)
 
@@ -323,9 +382,9 @@ def main():
             params = json.loads(args.params)
         else:
             # Convert the string of parameters into a params dictionary
-            groups = args.params.split(';')
+            groups = args.params.split(";")
             for group in groups:
-                param_parts = group.split(':')
+                param_parts = group.split(":")
                 # Protect against a trailing semi-colon
                 if len(param_parts) == 2:
                     params[param_parts[0]] = param_parts[1]
@@ -336,9 +395,9 @@ def main():
     # Check whether any output options were passed
     if args.opts != None:
         # Convert the string of options into a output_opts dictionary
-        groups = args.opts.split(';')
+        groups = args.opts.split(";")
         for group in groups:
-            opt_parts = group.split(':')
+            opt_parts = group.split(":")
             # Protect against a trailing semi-colon
             if len(opt_parts) == 2:
                 op1 = opt_parts[1]
@@ -347,7 +406,12 @@ def main():
                 if op1 == "True" or op1 == "False":
                     op = opt_parts[1] == "True"
                 elif op1[:1] == "(":
-                    op = tuple(map(float, opt_parts[1].replace("(", "").replace(")", "").split(',')))
+                    op = tuple(
+                        map(
+                            float,
+                            opt_parts[1].replace("(", "").replace(")", "").split(","),
+                        )
+                    )
                 elif "." in op1:
                     op = float(opt_parts[1])
                 else:
@@ -370,7 +434,7 @@ def main():
         if errfile == None:
             print("build_and_parse error: " + str(err), file=sys.stderr)
         else:
-            with open(errfile, 'w') as file:
+            with open(errfile, "w") as file:
                 file.write(err)
         sys.exit(100)
 
@@ -389,13 +453,16 @@ def main():
                 print(converted)
             else:
                 if isinstance(converted, str):
-                    with open(outfile, 'w') as file:
+                    with open(outfile, "w") as file:
                         file.write(converted)
                 elif isinstance(converted, (bytes, bytearray)):
-                    with open(outfile, 'wb') as file:
+                    with open(outfile, "wb") as file:
                         file.write(converted)
                 else:
-                    raise TypeError("Expected converted output to be str, bytes, or bytearray. Got '%s'" % type(converted).__name__)
+                    raise TypeError(
+                        "Expected converted output to be str, bytes, or bytearray. Got '%s'"
+                        % type(converted).__name__
+                    )
 
     except Exception:
         out_tb = traceback.format_exc()
@@ -404,10 +471,11 @@ def main():
         if errfile == None:
             print("Conversion codec error: " + str(out_tb), file=sys.stderr)
         else:
-            with open(errfile, 'w') as file:
+            with open(errfile, "w") as file:
                 file.write(str(out_tb))
 
         sys.exit(200)
+
 
 if __name__ == "__main__":
     main()

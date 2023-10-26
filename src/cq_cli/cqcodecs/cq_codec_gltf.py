@@ -1,7 +1,8 @@
 import os, tempfile
 from cadquery import exporters
 import cadquery as cq
-import cqcodecs.codec_helpers as helpers
+import cq_cli.cqcodecs.codec_helpers as helpers
+
 
 def convert(build_result, output_file=None, error_file=None, output_opts=None):
     # Create a temporary file to put the STL output into
@@ -15,10 +16,12 @@ def convert(build_result, output_file=None, error_file=None, output_opts=None):
         if type(build_result.first_result.shape).__name__ == "Assembly":
             build_result.first_result.shape.save(temp_file, binary=False)
         else:
-            raise ValueError("GLTF export is only available for CadQuery assemblies at this time")
+            raise ValueError(
+                "GLTF export is only available for CadQuery assemblies at this time"
+            )
 
     # Read the GLTF output back in
-    with open(temp_file, 'r') as file:
+    with open(temp_file, "r") as file:
         gltf_str = file.read()
 
     return gltf_str

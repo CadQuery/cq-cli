@@ -1,7 +1,8 @@
 import os, tempfile
 from cadquery import exporters
 import cadquery as cq
-import cqcodecs.codec_helpers as helpers
+import cq_cli.cqcodecs.codec_helpers as helpers
+
 
 def convert(build_result, output_file=None, error_file=None, output_opts=None):
     # Create a temporary file to put the STL output into
@@ -20,10 +21,12 @@ def convert(build_result, output_file=None, error_file=None, output_opts=None):
     # The exporters will add extra output that we do not want, so suppress it
     with helpers.suppress_stdout_stderr():
         # Put the STL output into the temp file
-        build_result.results[0].shape.val().exportStl(temp_file, linearDeflection, angularDeflection, True)
+        build_result.results[0].shape.val().exportStl(
+            temp_file, linearDeflection, angularDeflection, True
+        )
 
     # Read the STL output back in
-    with open(temp_file, 'r') as file:
+    with open(temp_file, "r") as file:
         stl_str = file.read()
 
     return stl_str

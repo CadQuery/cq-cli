@@ -3,14 +3,20 @@ import pytest
 import tests.test_helpers as helpers
 import json
 
+
 def test_no_cli_arguments():
     """
     Runs the CLI with no arguments, which you should not do unless you want the usage message.
     """
-    command = ["python", "cq-cli.py"]
+    command = ["python", "src/cq_cli/main.py"]
     out, err, exitcode = helpers.cli_call(command)
 
-    assert out.decode().split('\n')[0].startswith("Please specify at least the validate option")
+    assert (
+        out.decode()
+        .split("\n")[0]
+        .startswith("Please specify at least the validate option")
+    )
+
 
 def test_codec_and_infile_arguments_file_nonexistent():
     """
@@ -18,10 +24,18 @@ def test_codec_and_infile_arguments_file_nonexistent():
     """
     test_file = helpers.get_test_file_location("noexist.py")
 
-    command = ["python", "cq-cli.py", "--codec", "step", "--infile", test_file]
+    command = [
+        "python",
+        "src/cq_cli/main.py",
+        "--codec",
+        "step",
+        "--infile",
+        test_file,
+    ]
     out, err, exitcode = helpers.cli_call(command)
 
     assert err.decode().startswith("infile does not exist.")
+
 
 def test_codec_and_infile_arguments():
     """
@@ -29,10 +43,17 @@ def test_codec_and_infile_arguments():
     """
     test_file = helpers.get_test_file_location("cube.py")
 
-    command = ["python", "cq-cli.py", "--codec", "step", "--infile", test_file]
+    command = [
+        "python",
+        "src/cq_cli/main.py",
+        "--codec",
+        "step",
+        "--infile",
+        test_file,
+    ]
     out, err, exitcode = helpers.cli_call(command)
+    assert "ISO-10303-21;" in out.decode()
 
-    assert out.decode().split('\n')[0].replace('\r', '') == "ISO-10303-21;"
 
 def test_codec_infile_and_outfile_arguments():
     """
@@ -44,14 +65,24 @@ def test_codec_infile_and_outfile_arguments():
     temp_dir = tempfile.gettempdir()
     temp_file = os.path.join(temp_dir, "temp_test_4.step")
 
-    command = ["python", "cq-cli.py", "--codec", "step", "--infile", test_file, '--outfile', temp_file]
+    command = [
+        "python",
+        "src/cq_cli/main.py",
+        "--codec",
+        "step",
+        "--infile",
+        test_file,
+        "--outfile",
+        temp_file,
+    ]
     out, err, exitcode = helpers.cli_call(command)
 
     # Read the STEP output back from the outfile
-    with open(temp_file, 'r') as file:
+    with open(temp_file, "r") as file:
         step_str = file.read()
 
     assert step_str.startswith("ISO-10303-21;")
+
 
 def test_codec_infile_outfile_errfile_arguments():
     """
@@ -65,11 +96,22 @@ def test_codec_infile_outfile_errfile_arguments():
     temp_file = os.path.join(temp_dir, "temp_test_5.step")
     err_file = os.path.join(temp_dir, "temp_test_5_error.txt")
 
-    command = ["python", "cq-cli.py", "--codec", "step", "--infile", test_file, '--outfile', temp_file, '--errfile', err_file]
+    command = [
+        "python",
+        "src/cq_cli/main.py",
+        "--codec",
+        "step",
+        "--infile",
+        test_file,
+        "--outfile",
+        temp_file,
+        "--errfile",
+        err_file,
+    ]
     out, err, exitcode = helpers.cli_call(command)
 
     # Read the error back from the errfile
-    with open(err_file, 'r') as file:
+    with open(err_file, "r") as file:
         err_str = file.read()
 
     assert err_str == "Argument error: infile does not exist."
@@ -86,11 +128,22 @@ def test_parameter_file():
     temp_dir = tempfile.gettempdir()
     temp_file = os.path.join(temp_dir, "temp_test_6.step")
 
-    command = ["python", "cq-cli.py", "--codec", "step", "--infile", test_file, '--outfile', temp_file, '--params', params_file]
+    command = [
+        "python",
+        "src/cq_cli/main.py",
+        "--codec",
+        "step",
+        "--infile",
+        test_file,
+        "--outfile",
+        temp_file,
+        "--params",
+        params_file,
+    ]
     out, err, exitcode = helpers.cli_call(command)
 
     # Read the STEP output back from the outfile
-    with open(temp_file, 'r') as file:
+    with open(temp_file, "r") as file:
         step_str = file.read()
 
     assert step_str.startswith("ISO-10303-21;")
@@ -106,11 +159,22 @@ def test_parameter_json_string():
     temp_dir = tempfile.gettempdir()
     temp_file = os.path.join(temp_dir, "temp_test_7.step")
 
-    command = ["python", "cq-cli.py", "--codec", "step", "--infile", test_file, '--outfile', temp_file, '--params', "{\"width\":10}"]
+    command = [
+        "python",
+        "src/cq_cli/main.py",
+        "--codec",
+        "step",
+        "--infile",
+        test_file,
+        "--outfile",
+        temp_file,
+        "--params",
+        '{"width":10}',
+    ]
     out, err, exitcode = helpers.cli_call(command)
 
     # Read the STEP output back from the outfile
-    with open(temp_file, 'r') as file:
+    with open(temp_file, "r") as file:
         step_str = file.read()
 
     assert step_str.startswith("ISO-10303-21;")
@@ -126,11 +190,22 @@ def test_parameter_delimited_string():
     temp_dir = tempfile.gettempdir()
     temp_file = os.path.join(temp_dir, "temp_test_8.step")
 
-    command = ["python", "cq-cli.py", "--codec", "step", "--infile", test_file, '--outfile', temp_file, '--params', "width:10;"]
+    command = [
+        "python",
+        "src/cq_cli/main.py",
+        "--codec",
+        "step",
+        "--infile",
+        test_file,
+        "--outfile",
+        temp_file,
+        "--params",
+        "width:10;",
+    ]
     out, err, exitcode = helpers.cli_call(command)
 
     # Read the STEP output back from the outfile
-    with open(temp_file, 'r') as file:
+    with open(temp_file, "r") as file:
         step_str = file.read()
 
     assert step_str.startswith("ISO-10303-21;")
@@ -142,7 +217,14 @@ def test_parameter_analysis():
     """
     test_file = helpers.get_test_file_location("cube_params.py")
 
-    command = ["python", "cq-cli.py", "--getparams", "true", "--infile", test_file]
+    command = [
+        "python",
+        "src/cq_cli/main.py",
+        "--getparams",
+        "true",
+        "--infile",
+        test_file,
+    ]
     out, err, exitcode = helpers.cli_call(command)
 
     # Grab the JSON output from cq-cli
@@ -176,25 +258,50 @@ def test_parameter_file_input_output():
     temp_file = os.path.join(temp_dir, "temp_test_9.json")
 
     # Save the parameters from the script to a file
-    command = ["python", "cq-cli.py", "--getparams", temp_file, "--infile", test_file]
+    command = [
+        "python",
+        "src/cq_cli/main.py",
+        "--getparams",
+        temp_file,
+        "--infile",
+        test_file,
+    ]
     out, err, exitcode = helpers.cli_call(command)
 
     # Run the script with baseline parameters
-    command2 = ["python", "cq-cli.py", "--codec", "stl", "--infile", test_file, '--params', temp_file]
+    command2 = [
+        "python",
+        "src/cq_cli/main.py",
+        "--codec",
+        "stl",
+        "--infile",
+        test_file,
+        "--params",
+        temp_file,
+    ]
     out2, err2, exitcode2 = helpers.cli_call(command2)
 
     assert err2.decode() == ""
 
     # Modify the parameters file
-    with open(temp_file, 'r') as file:
+    with open(temp_file, "r") as file:
         json_str = file.read()
     json_dict = json.loads(json_str)
-    json_dict[0]['initial'] = 10
+    json_dict[0]["initial"] = 10
     with open(temp_file, "w") as file:
         file.writelines(json.dumps(json_dict))
 
     # Run the command with the new parameters
-    command3 = ["python", "cq-cli.py", "--codec", "stl", "--infile", test_file, '--params', temp_file]
+    command3 = [
+        "python",
+        "src/cq_cli/main.py",
+        "--codec",
+        "stl",
+        "--infile",
+        test_file,
+        "--params",
+        temp_file,
+    ]
     out3, err3, exitcode3 = helpers.cli_call(command3)
 
     # Make sure that the file output changed
@@ -223,28 +330,50 @@ def test_params_stl_output():
         file.writelines(json.dumps(params_json))
 
     # Execute the script with the current parameters and save the new parameter metadata to the customizer file
-    command = ["python", "cq-cli.py", "--codec", "stl", "--infile", test_file, '--outfile', output_file_path, "--params", params_json_file_path, "--getparams", customizer_file_path ]
+    command = [
+        "python",
+        "src/cq_cli/main.py",
+        "--codec",
+        "stl",
+        "--infile",
+        test_file,
+        "--outfile",
+        output_file_path,
+        "--params",
+        params_json_file_path,
+        "--getparams",
+        customizer_file_path,
+    ]
     out, err, exitcode = helpers.cli_call(command)
 
     # Make sure there was no error
     assert err.decode() == ""
 
     # Make sure that the customizer.json file exists and has what we expect in it
-    with open(customizer_file_path, 'r') as file2:
+    with open(customizer_file_path, "r") as file2:
         json_str = file2.read()
     json_dict = json.loads(json_str)
-    assert json_dict[0]['initial'] == 1
-    assert json_dict[1]['initial'] == "cube"
-    assert json_dict[2]['initial'] == True
+    assert json_dict[0]["initial"] == 1
+    assert json_dict[1]["initial"] == "cube"
+    assert json_dict[2]["initial"] == True
 
     # Write an STL using the default parameters so that we can compare it to what was generated with customized parameters
-    command = ["python", "cq-cli.py", "--codec", "stl", "--infile", test_file, '--outfile', default_output_file_path ]
+    command = [
+        "python",
+        "src/cq_cli/main.py",
+        "--codec",
+        "stl",
+        "--infile",
+        test_file,
+        "--outfile",
+        default_output_file_path,
+    ]
     out2, err2, exitcode2 = helpers.cli_call(command)
 
     # Compare the two files to make sure they are different
-    with open(output_file_path, 'r') as file3:
+    with open(output_file_path, "r") as file3:
         stl_output_with_params = file3.read()
-    with open(default_output_file_path, 'r') as file4:
+    with open(default_output_file_path, "r") as file4:
         default_stl = file4.read()
     assert stl_output_with_params != default_stl
 
@@ -256,7 +385,7 @@ def test_exit_codes():
     """
 
     # Test to make sure we get the correct exit code when no parameters are specified
-    command = ["python", "cq-cli.py" ]
+    command = ["python", "src/cq_cli/main.py"]
     out, err, exitcode = helpers.cli_call(command)
 
     # Make sure that we got exit code 2
@@ -266,7 +395,14 @@ def test_exit_codes():
     test_input_file = helpers.get_test_file_location("impossible_cube.py")
 
     # Execute the script with the current parameters and save the new parameter metadata to the customizer file
-    command = ["python", "cq-cli.py", "--codec", "step", "--infile", test_input_file ]
+    command = [
+        "python",
+        "src/cq_cli/main.py",
+        "--codec",
+        "step",
+        "--infile",
+        test_input_file,
+    ]
     out, err, exitcode = helpers.cli_call(command)
 
     # Make sure that we got exit code 100 for a failed model build

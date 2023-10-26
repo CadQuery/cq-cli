@@ -3,9 +3,9 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "cq-cli"
-version = "2.1.0"
-license = "Apache-2.0"
+name = "cq_cli"
+version = "2.3.0"
+license = {file = "LICENSE"}
 authors = [
   { name="Jeremy Wright" },
 ]
@@ -17,9 +17,33 @@ classifiers = [
     "Operating System :: OS Independent",
 ]
 dependencies = [
-  'cadquery >= 2.3.1',
+  "cadquery @ git+https://github.com/CadQuery/cadquery.git",
+  "cadquery-ocp>=7.7.0a0,<7.8",
+  "ezdxf",
+  "multimethod>=1.7,<2.0",
+  "nlopt",
+  "nptyping==2.0.1",
+  "typish",
+  "casadi",
+  "path",
+]
+
+[project.scripts]
+cq-cli = "cq_cli.main:main"
+
+[project.optional-dependencies]
+dev = [
+  "pytest",
+  "black==19.10b0",
+  "click==8.0.4"
 ]
 
 [project.urls]
 "Homepage" = "https://github.com/CadQuery/cq-cli"
 "Bug Tracker" = "https://github.com/CadQuery/cq-cli/issues"
+
+[tool.hatch.metadata]
+allow-direct-references = true
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/cq_cli"]
