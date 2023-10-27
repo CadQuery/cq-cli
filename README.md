@@ -28,7 +28,28 @@ Linux, MacOS and Windows are supported, but some features may be used differentl
 
 In addition to opening an issue on this repo, there is a [CadQuery Discord channel](https://discord.gg/qz3uAdF) and a [Google Group](https://groups.google.com/g/cadquery) that you can join to ask for help getting started with cq-cli.
 
-## Installation
+## Installation (pip)
+
+***Note:*** It probably goes without saying, but it is best to use a Python virtual environment when installing a Python package like cq-cli.
+
+These instructions cover installing cq-cli using pip. If you want a stand-alone installation that does not require any of the Python infrastructure, read the Stand-Alone section below.
+
+cq-cli is not available on PyPI, so it must be installed using pip and git. git must be installed for this process to work.
+
+```
+pip install git+https://github.com/CadQuery/cq-cli.git
+```
+Once the installation is complete, there will be two different ways to run the cq-cli command line interface.
+
+```
+cq-cli --help
+```
+or
+```
+python -m cq_cli.main --help
+```
+
+## Installation (Stand-Alone)
 
 Download a binary distribution that is appropriate for your operating system from the [latest release](https://github.com/CadQuery/cq-cli/releases/tag/v0.1.0-alpha), extract the zip file, and make sure to put the cq-cli binary in the PATH. Then the CLI can be invoked as `cq-cli` (`cq-cli.exe` on Windows).
 
