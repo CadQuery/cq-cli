@@ -32,7 +32,7 @@ for file_path in file_list:
     hidden_imports.append("cqcodecs." + module_name)
 hidden_imports.append('OCP')
 hidden_imports.append('casadi')
-hidden_imports.append('casadi._casadi)
+hidden_imports.append('casadi._casadi')
 hidden_imports.append('typing_extensions')
 hidden_imports.append('pyparsing')
 hidden_imports.append('ezdxf')
