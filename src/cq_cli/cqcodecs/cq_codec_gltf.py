@@ -1,6 +1,4 @@
 import os, tempfile
-from cadquery import exporters
-import cadquery as cq
 import cq_cli.cqcodecs.codec_helpers as helpers
 
 
