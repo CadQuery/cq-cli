@@ -2,6 +2,7 @@ import os, tempfile
 from cadquery import exporters
 import cq_cli.cqcodecs.codec_helpers as helpers
 
+
 def convert(build_result, output_file=None, error_file=None, output_opts=None):
     # Create a temporary file to put the STL output into
     temp_dir = tempfile.gettempdir()
