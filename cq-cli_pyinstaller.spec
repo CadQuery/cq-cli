@@ -45,7 +45,7 @@ hidden_imports.append('vtkmodules.all')
 hidden_imports_numpy = collect_submodules('numpy')
 hidden_imports = hidden_imports + hidden_imports_numpy
 
-a = Analysis(['cq_cli.py'],
+a = Analysis(['src/cq_cli/main.py'],
              pathex=['.'],
              binaries=[
                  ocp_path
