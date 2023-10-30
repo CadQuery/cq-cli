@@ -49,10 +49,10 @@ hidden_imports = hidden_imports + hidden_imports_numpy
 
 if sys.platform == 'win32':
     # print(os.path.join(os.environ['CPATH']))
-    dlls = [('C:\hostedtoolcache\windows\Python\3.10.11\x64\Lib\site-packages\casadi\libcasadi.dll', '.'),
-            ('C:\hostedtoolcache\windows\Python\3.10.11\x64\Lib\site-packages\casadi\libcasadi_nlpsol_ipopt.dll', '.'),
-            ('C:\hostedtoolcache\windows\Python\3.10.11\x64\Lib\site-packages\casadi\libgfortran-3.dll', '.'),
-            ('C:\hostedtoolcache\windows\Python\3.10.11\x64\Lib\site-packages\casadi\libquadmath-0.dll', '.')]
+    dlls = [('C:\\hostedtoolcache\\windows\\Python\\3.10.11\\x64\\Lib\\site-packages\\casadi\\libcasadi.dll', '.'),
+            ('C:\\hostedtoolcache\\windows\\Python\\3.10.11\\x64\\Lib\\site-packages\\casadi\\libcasadi_nlpsol_ipopt.dll', '.'),
+            ('C:\\hostedtoolcache\\windows\\Python\\3.10.11\\x64\\Lib\\site-packages\\casadi\\libgfortran-3.dll', '.'),
+            ('C:\\hostedtoolcache\\windows\\Python\\3.10.11\\x64\\Lib\\site-packages\\casadi\\libquadmath-0.dll', '.')]
 else:
     dlls = []
 
