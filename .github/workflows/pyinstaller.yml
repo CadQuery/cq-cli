@@ -66,6 +66,8 @@ jobs:
     - name: Run build
       run: |
         # Get-ChildItem -Path C:\ -Filter libcasadi.dll -Recurse
+        CPATH=$pythonLocation/include/python${{ matrix.python-version }}m
+        echo "CPATH=$CPATH" >> $GITHUB_ENV
         pyinstaller pyinstaller.spec ${{ github.event.inputs.type }}
     - uses: actions/upload-artifact@v2
       with:

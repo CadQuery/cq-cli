@@ -48,10 +48,11 @@ hidden_imports_numpy = collect_submodules('numpy')
 hidden_imports = hidden_imports + hidden_imports_numpy
 
 if sys.platform == 'win32':
-    dlls = [('libcasadi.dll', '.'),
-            ('libcasadi_nlpsol_ipopt.dll', '.'),
-            ('libgfortran-3.dll', '.'),
-            ('libquadmath-0.dll', '.')]
+    print(os.path.join(os.environ['CPATH']))
+    dlls = [(os.path.join(os.environ['CPATH'], 'libcasadi.dll'), '.'),
+            (os.path.join(os.environ['CPATH'], 'libcasadi_nlpsol_ipopt.dll'), '.'),
+            (os.path.join(os.environ['CPATH'], 'libgfortran-3.dll'), '.'),
+            (os.path.join(os.environ['CPATH'], 'libquadmath-0.dll'), '.')]
 else:
     dlls = []
 
