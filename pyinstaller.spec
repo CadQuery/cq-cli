@@ -32,7 +32,7 @@ for file_path in file_list:
     hidden_imports.append("cqcodecs." + module_name)
 hidden_imports.append('OCP')
 hidden_imports.append('casadi')
-hidden_imports.append('casadi._casadi')
+hidden_imports.append('ipopt')
 hidden_imports.append('typing_extensions')
 hidden_imports.append('pyparsing')
 hidden_imports.append('ezdxf')
@@ -47,11 +47,17 @@ hidden_imports.append('vtkmodules.all')
 hidden_imports_numpy = collect_submodules('numpy')
 hidden_imports = hidden_imports + hidden_imports_numpy
 
+if sys.platform == 'win32':
+    dlls = [('\\casadi\\libcasadi.dll', '.'),
+            ('casadi\\libcasadi_nlpsol_ipopt.dll', '.'),
+            ('\casadi\\libgfortran-3.dll', '.'),
+            ('\\casadi\\libquadmath-0.dll', '.')]
+else:
+    dlls = []
+
 a = Analysis(['src/cq_cli/main.py'],
              pathex=['.'],
-             #binaries=[
-             #    ocp_path
-             #],
+             binaries=dlls,
              datas=[
                 (os.path.join(os.path.dirname(os.path.realpath('__file__')), 'src', 'cq_cli', 'cqcodecs'), 'cqcodecs')
              ],
