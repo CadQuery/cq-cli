@@ -25,7 +25,7 @@ elif sys.platform == 'win32':
 
 # Dynamically find all the modules in the cqcodecs directory
 hidden_imports = []
-file_list = glob.glob('.' + os.path.sep + 'cqcodecs' + os.path.sep + 'cq_codec_*.py')
+file_list = glob.glob('.' + os.path.sep + 'src' + os.path.sep + 'cq_cli' + os.path.sep + 'cqcodecs' + os.path.sep + 'cq_codec_*.py')
 for file_path in file_list:
     file_name = file_path.split(os.path.sep)[-1]
     module_name = file_name.replace(".py", "")
@@ -51,7 +51,7 @@ a = Analysis(['src/cq_cli/main.py'],
                  ocp_path
              ],
              datas=[
-                 (os.path.join(os.path.dirname(os.path.realpath('__file__')), 'cqcodecs'), 'cqcodecs')
+                 (os.path.join(os.path.dirname(os.path.realpath('__file__')), 'src', 'cq_cli', 'cqcodecs'), 'cqcodecs')
              ],
              hiddenimports=hidden_imports,
              hookspath=[],
