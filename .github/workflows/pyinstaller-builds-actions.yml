@@ -82,7 +82,8 @@ jobs:
     - name: Run build
       shell: pwsh
       run: |
-        # Get-ChildItem -Path C:\Miniconda3\envs\test\ -Filter OCP* -Recurse
+        dir C:\Mini*
+        Get-ChildItem -Path C:\Miniconda3\envs\test\ -Filter OCP* -Recurse
         mamba info
         pyinstaller cq-cli_pyinstaller.spec ${{ github.event.inputs.type }}
     - uses: actions/upload-artifact@v2
