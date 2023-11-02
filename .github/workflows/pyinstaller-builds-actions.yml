@@ -74,15 +74,15 @@ jobs:
     - name: Install CadQuery and pyinstaller
       shell: pwsh
       run: |
-        conda info
-        conda install -c cadquery -c conda-forge cadquery=master python=3.8 libnetcdf=4.7.4
-        conda install -c conda-forge pyinstaller
+        mamba info
+        mamba install -c cadquery -c conda-forge cadquery=master python=3.8 libnetcdf=4.7.4
+        mamba install -c conda-forge pyinstaller
         pip install path
     - name: Run build
       shell: pwsh
       run: |
         Get-ChildItem -Path C:\Miniconda3\envs\test\ -Filter OCP.cp38-win_amd64.pyd -Recurse
-        conda info
+        mamba info
         pyinstaller cq-cli_pyinstaller.spec ${{ github.event.inputs.type }}
     - uses: actions/upload-artifact@v2
       with:
