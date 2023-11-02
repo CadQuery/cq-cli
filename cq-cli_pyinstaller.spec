@@ -47,9 +47,9 @@ hidden_imports = hidden_imports + hidden_imports_numpy
 
 a = Analysis(['src/cq_cli/main.py'],
              pathex=['.'],
-             binaries=[
-                 ocp_path
-             ],
+             # binaries=[
+             #     ocp_path
+             # ],
              datas=[
                  (os.path.join(os.path.dirname(os.path.realpath('__file__')), 'src', 'cq_cli', 'cqcodecs'), 'cqcodecs')
              ],
