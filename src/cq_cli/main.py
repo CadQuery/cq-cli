@@ -20,13 +20,15 @@ import json
 from cq_cli.cqcodecs import loader
 
 
-def build_and_parse(script_str, params, errfile):
+def build_and_parse(script_str, params, errfile, entrypoint):
     """
     Uses CQGI to parse and build a script, substituting in parameters if any were supplied.
     """
     # We need to do a broad try/catch to let the user know if something higher-level fails
     try:
         # Do the CQGI handling of the script here and, if successful, pass the build result to the codec
+        if entrypoint != None:
+            script_str += "\n" + entrypoint
         cqModel = cqgi.parse(script_str)
         build_result = cqModel.build(params)
 
@@ -181,6 +183,10 @@ def main():
         "--validate",
         help="Setting to true forces the CLI to only parse and validate the script and not produce converted output.",
     )
+    parser.add_argument(
+        "--entrypoint",
+        help="A snipped of python code to append to the input file before rendering. This allows rendering different models/parts from the same python file.",
+    )
 
     args = parser.parse_args()
 
@@ -223,7 +229,7 @@ def main():
         # Set the PYTHONPATH variable to the current directory to allow module loading
         set_pythonpath_for_infile(args.infile)
 
-        build_result = build_and_parse(script_str, params, errfile)
+        build_result = build_and_parse(script_str, params, errfile, args.entrypoint)
 
         # Double-check that the build was a success
         if build_result != None and build_result.success:
@@ -424,7 +430,7 @@ def main():
     #
     build_result = None
     try:
-        build_result = build_and_parse(script_str, params, errfile)
+        build_result = build_and_parse(script_str, params, errfile, args.entrypoint)
 
         # If None was returned, it means the build failed and the exception has already been reported
         if build_result == None:
