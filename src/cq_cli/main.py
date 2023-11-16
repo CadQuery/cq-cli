@@ -185,7 +185,7 @@ def main():
     )
     parser.add_argument(
         "--entrypoint",
-        help="A snipped of python code to append to the input file before rendering. This allows rendering different models/parts from the same python file.",
+        help="A snippet of python code to append to the input file before rendering. This allows rendering different models/parts from the same python file.",
     )
 
     args = parser.parse_args()
