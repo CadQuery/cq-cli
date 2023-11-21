@@ -28,7 +28,9 @@ def build_and_parse(script_str, params, errfile, entrypoint):
     try:
         # Do the CQGI handling of the script here and, if successful, pass the build result to the codec
         if entrypoint != None:
-            script_str += "\n" + entrypoint
+            if not entrypoint.isidentifier():
+                raise ValueError("Entrypoint is not a valid python function name")
+            script_str += "\nshow_object({f}())".format(f=entrypoint)
         cqModel = cqgi.parse(script_str)
         build_result = cqModel.build(params)
 
@@ -185,7 +187,7 @@ def main():
     )
     parser.add_argument(
         "--entrypoint",
-        help="A snippet of python code to append to the input file before rendering. This allows rendering different models/parts from the same python file.",
+        help="The name of a python function that returns a cadquery model object. cq-cli will call the function and render the resulting object. This allows rendering different models/parts from the same python file.",
     )
 
     args = parser.parse_args()
