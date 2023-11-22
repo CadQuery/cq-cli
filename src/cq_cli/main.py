@@ -20,17 +20,15 @@ import json
 from cq_cli.cqcodecs import loader
 
 
-def build_and_parse(script_str, params, errfile, entrypoint):
+def build_and_parse(script_str, params, errfile, expression):
     """
     Uses CQGI to parse and build a script, substituting in parameters if any were supplied.
     """
     # We need to do a broad try/catch to let the user know if something higher-level fails
     try:
         # Do the CQGI handling of the script here and, if successful, pass the build result to the codec
-        if entrypoint != None:
-            if not entrypoint.isidentifier():
-                raise ValueError("Entrypoint is not a valid python function name")
-            script_str += "\nshow_object({f}())".format(f=entrypoint)
+        if expression != None:
+            script_str += "\nshow_object({expr})".format(expr=expression)
         cqModel = cqgi.parse(script_str)
         build_result = cqModel.build(params)
 
@@ -186,8 +184,8 @@ def main():
         help="Setting to true forces the CLI to only parse and validate the script and not produce converted output.",
     )
     parser.add_argument(
-        "--entrypoint",
-        help="The name of a python function that returns a cadquery model object. cq-cli will call the function and render the resulting object. This allows rendering different models/parts from the same python file.",
+        "--expression",
+        help="A python expression (such as `my_shape(x=5)`) to evaluate and render. This allows rendering different models/parts from the same python file.",
     )
 
     args = parser.parse_args()
@@ -231,7 +229,7 @@ def main():
         # Set the PYTHONPATH variable to the current directory to allow module loading
         set_pythonpath_for_infile(args.infile)
 
-        build_result = build_and_parse(script_str, params, errfile, args.entrypoint)
+        build_result = build_and_parse(script_str, params, errfile, args.expression)
 
         # Double-check that the build was a success
         if build_result != None and build_result.success:
@@ -432,7 +430,7 @@ def main():
     #
     build_result = None
     try:
-        build_result = build_and_parse(script_str, params, errfile, args.entrypoint)
+        build_result = build_and_parse(script_str, params, errfile, args.expression)
 
         # If None was returned, it means the build failed and the exception has already been reported
         if build_result == None:
