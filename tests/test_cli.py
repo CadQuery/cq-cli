@@ -407,3 +407,53 @@ def test_exit_codes():
 
     # Make sure that we got exit code 100 for a failed model build
     assert exitcode == 100
+
+
+def test_expression_argument():
+    """
+    Tests the CLI with the the expression argument.
+    """
+    test_file = helpers.get_test_file_location("no_toplevel_objects.py")
+
+    # Get a temporary output file location
+    temp_dir = tempfile.gettempdir()
+    temp_file = os.path.join(temp_dir, "temp_test_10.step")
+
+    command = [
+        "python",
+        "src/cq_cli/main.py",
+        "--codec",
+        "step",
+        "--infile",
+        test_file,
+        "--outfile",
+        temp_file,
+        "--expression",
+        "cube()",
+    ]
+    out, err, exitcode = helpers.cli_call(command)
+
+    # Read the STEP output back from the outfile
+    with open(temp_file, "r") as file:
+        step_str = file.read()
+
+    assert step_str.startswith("ISO-10303-21;")
+
+    # Run cq-cli on the same model file, but don't specify an --expression. This
+    # should fail because the file contains no top-level show_object() calls.
+    command = [
+        "python",
+        "src/cq_cli/main.py",
+        "--codec",
+        "step",
+        "--infile",
+        test_file,
+        "--outfile",
+        temp_file,
+    ]
+    out, err, exitcode = helpers.cli_call(command)
+
+    print("err: %s" % err.decode())
+
+    # cq-cli invocation should fail
+    assert exitcode == 200
