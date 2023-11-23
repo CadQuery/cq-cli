@@ -419,6 +419,7 @@ def test_expression_argument():
     temp_dir = tempfile.gettempdir()
     temp_file = os.path.join(temp_dir, "temp_test_10.step")
 
+    # Run cq-cli with --expression "cube()"
     command = [
         "python",
         "src/cq_cli/main.py",
@@ -452,8 +453,6 @@ def test_expression_argument():
         temp_file,
     ]
     out, err, exitcode = helpers.cli_call(command)
-
-    print("err: %s" % err.decode())
 
     # cq-cli invocation should fail
     assert exitcode == 200
