@@ -20,8 +20,17 @@ def convert(build_result, output_file=None, error_file=None, output_opts=None):
 
     # The exporters will add extra output that we do not want, so suppress it
     with helpers.suppress_stdout_stderr():
+        # There should be a shape in the build results
+        result = build_result.results[0].shape
+
+        # If the build result is an assembly, we have to make it a compound before trying to export it as SVG
+        if type(result).__name__ == "Assembly":
+            result = result.toCompound()
+        else:
+            result = result.val()
+
         # Put the STL output into the temp file
-        build_result.results[0].shape.val().exportStl(
+        result.exportStl(
             temp_file, linearDeflection, angularDeflection, True
         )
 
