@@ -30,9 +30,7 @@ def convert(build_result, output_file=None, error_file=None, output_opts=None):
             result = result.val()
 
         # Put the STL output into the temp file
-        result.exportStl(
-            temp_file, linearDeflection, angularDeflection, True
-        )
+        result.exportStl(temp_file, linearDeflection, angularDeflection, True)
 
     # Read the STL output back in
     with open(temp_file, "r") as file:

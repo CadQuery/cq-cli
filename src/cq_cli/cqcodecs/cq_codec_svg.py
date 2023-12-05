@@ -19,10 +19,7 @@ def convert(build_result, output_file=None, error_file=None, output_opts=None):
 
         # Put the STEP output into the temp file
         exporters.export(
-            result,
-            temp_file,
-            exporters.ExportTypes.SVG,
-            opt=output_opts,
+            result, temp_file, exporters.ExportTypes.SVG, opt=output_opts,
         )
 
     # Read the STEP output back in
