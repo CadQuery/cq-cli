@@ -57,3 +57,22 @@ def test_stl_codec_quality():
     low_detail = len(out2.decode().split("\n"))
 
     assert low_detail < high_detail
+
+
+def test_stl_codec_with_assembly():
+    """
+    Test of the STL codec plugin with a CadQuery assembly.
+    """
+    test_file = helpers.get_test_file_location("cube_assy.py")
+
+    command = [
+        "python",
+        "src/cq_cli/main.py",
+        "--codec",
+        "stl",
+        "--infile",
+        test_file,
+    ]
+    out, err, exitcode = helpers.cli_call(command)
+
+    assert out.decode().split("\n")[0].replace("\r", "") == "solid "
