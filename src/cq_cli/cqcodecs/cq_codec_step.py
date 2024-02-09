@@ -11,9 +11,16 @@ def convert(build_result, output_file=None, error_file=None, output_opts=None):
 
     # The exporters will add extra output that we do not want, so suppress it
     with helpers.suppress_stdout_stderr():
+        # There should be a shape in the build results
+        result = build_result.results[0].shape
+
+        # If the build result is an assembly, we have to make it a compound before exporting
+        if type(result).__name__ == "Assembly":
+            result = result.toCompound()
+
         # Put the STEP output into the temp file
         exporters.export(
-            build_result.results[0].shape, temp_file, exporters.ExportTypes.STEP
+            result, temp_file, exporters.ExportTypes.STEP
         )
 
     # Read the STEP output back in
