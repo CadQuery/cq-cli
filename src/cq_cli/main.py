@@ -420,6 +420,8 @@ def main():
                     )
                 elif "." in op1:
                     op = float(opt_parts[1])
+                elif '"' in op1 or "'" in op1:
+                    op = str(opt_parts[1])
                 else:
                     op = int(opt_parts[1])
 
