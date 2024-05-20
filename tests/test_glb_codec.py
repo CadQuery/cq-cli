@@ -19,5 +19,3 @@ def test_glb_codec():
     out, err, exitcode = helpers.cli_call(command)
 
     assert out.decode().startswith("b'glTF")
-
-
