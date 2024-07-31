@@ -477,11 +477,12 @@ def test_multiple_outfiles():
         "step;stl",
         "--infile",
         test_file,
-         "--outfile",
+        "--outfile",
         temp_paths,
     ]
     out, err, exitcode = helpers.cli_call(command)
     assert exitcode == 0
+
 
 def test_multiple_outfiles_codec_mismatch():
     """
@@ -502,7 +503,7 @@ def test_multiple_outfiles_codec_mismatch():
         "step",
         "--infile",
         test_file,
-         "--outfile",
+        "--outfile",
         temp_paths,
     ]
     out, err, exitcode = helpers.cli_call(command)

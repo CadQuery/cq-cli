@@ -502,7 +502,9 @@ def main():
                 codec_module = active_codecs[i]
 
             # Use the codec plugin to do the conversion
-            converted = codec_module.convert(build_result, outfile, errfile, output_opts)
+            converted = codec_module.convert(
+                build_result, outfile, errfile, output_opts
+            )
 
             # If converted is None, assume that the output was written to file directly by the codec
             if converted != None:
