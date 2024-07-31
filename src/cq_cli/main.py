@@ -141,8 +141,11 @@ def get_params_from_file(param_json_path, errfile):
 
 def main():
     outfile = None
+    outfiles = None
     errfile = None
     codec_module = None
+    codecs = None
+    active_codecs = None
     params = {}
     output_opts = {}
 
@@ -155,7 +158,7 @@ def main():
     )
     parser.add_argument(
         "--codec",
-        help="The codec to use when converting the CadQuery output. Must match the name of a codec file in the cqcodecs directory.",
+        help="The codec to use when converting the CadQuery output. Must match the name of a codec file in the cqcodecs directory.  Multiple codecs can be specified, separated by the colon (;) character. The number of codecs must match the number of output files (outfile parameter).",
     )
     parser.add_argument(
         "--getparams",
@@ -164,7 +167,7 @@ def main():
     parser.add_argument("--infile", help="The input CadQuery script to convert.")
     parser.add_argument(
         "--outfile",
-        help="File to write the converted CadQuery output to. Prints to stdout if not specified.",
+        help="File to write the converted CadQuery output to. Prints to stdout if not specified. Multiple output files can be specified, separated by the colon (;) character. The number of codecs (codec parameter) must match the number of output files.",
     )
     parser.add_argument(
         "--errfile",
@@ -209,6 +212,11 @@ def main():
     # See whether to output to a file or stdout
     if args.outfile != None:
         outfile = args.outfile
+
+        # Handle the case of multiple outfiles
+        if ";" in outfile:
+            outfiles = outfile.split(";")
+            outfile = outfiles[0]
 
     #
     # Errfile handling
@@ -321,6 +329,28 @@ def main():
     # Save the requested codec for later
     codec = args.codec
 
+    # Handle multiple output files
+    if ";" in codec:
+        codecs = codec.split(";")
+        codec = codecs[0]
+
+    # Do the first check to make sure the codecs match the number of output files
+    if (outfiles != None and codecs == None) or (outfiles == None and codecs != None):
+        print(
+            "The number of codecs does not match the number of output files.",
+            file=sys.stderr,
+        )
+        sys.exit(4)
+
+    # Make sure the codecs match the number of output files
+    if outfiles != None and codecs != None:
+        if len(outfiles) != len(codecs):
+            print(
+                "The number of codecs does not match the number of output files.",
+                file=sys.stderr,
+            )
+            sys.exit(4)
+
     # Attempt to auto-detect the codec if the user has not set the option
     if args.outfile != None and args.codec == None:
         # Determine the codec from the file extension
@@ -350,6 +380,16 @@ def main():
         # Check to make sure that the requested codec exists
         if codec in key:
             codec_module = loaded_codecs[key]
+
+    # Handle there being multiple codecs
+    if codecs != None:
+        for cur_codec in codecs:
+            for key in loaded_codecs:
+                # Check to make sure that the requested codec exists
+                if cur_codec in key:
+                    if active_codecs == None:
+                        active_codecs = []
+                    active_codecs.append(loaded_codecs["cq_codec_" + cur_codec])
 
     #
     # Infile handling
@@ -451,26 +491,36 @@ def main():
     #
     # Build, parse and let the selected codec convert the CQ output
     try:
-        # Use the codec plugin to do the conversion
-        converted = codec_module.convert(build_result, outfile, errfile, output_opts)
+        # Handle the case of multiple output files
+        if outfiles == None:
+            outfiles = [outfile]
 
-        # If converted is None, assume that the output was written to file directly by the codec
-        if converted != None:
-            # Write the converted output to the appropriate place based on the command line arguments
-            if outfile == None:
-                print(converted)
-            else:
-                if isinstance(converted, str):
-                    with open(outfile, "w") as file:
-                        file.write(converted)
-                elif isinstance(converted, (bytes, bytearray)):
-                    with open(outfile, "wb") as file:
-                        file.write(converted)
+        # Step through all of the potential output files
+        for i in range(len(outfiles)):
+            outfile = outfiles[i]
+            if len(outfiles) > 1:
+                codec_module = active_codecs[i]
+
+            # Use the codec plugin to do the conversion
+            converted = codec_module.convert(build_result, outfile, errfile, output_opts)
+
+            # If converted is None, assume that the output was written to file directly by the codec
+            if converted != None:
+                # Write the converted output to the appropriate place based on the command line arguments
+                if outfile == None:
+                    print(converted)
                 else:
-                    raise TypeError(
-                        "Expected converted output to be str, bytes, or bytearray. Got '%s'"
-                        % type(converted).__name__
-                    )
+                    if isinstance(converted, str):
+                        with open(outfile, "w") as file:
+                            file.write(converted)
+                    elif isinstance(converted, (bytes, bytearray)):
+                        with open(outfile, "wb") as file:
+                            file.write(converted)
+                    else:
+                        raise TypeError(
+                            "Expected converted output to be str, bytes, or bytearray. Got '%s'"
+                            % type(converted).__name__
+                        )
 
     except Exception:
         out_tb = traceback.format_exc()
