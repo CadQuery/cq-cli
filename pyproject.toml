@@ -21,6 +21,7 @@ dependencies = [
   "cadquery-ocp>=7.7.0a0,<7.8",
   "ezdxf",
   "multimethod>=1.7,<2.0",
+  "numpy<2.0.0",
   "nlopt",
   "typish",
   "casadi",
