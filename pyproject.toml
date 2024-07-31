@@ -22,7 +22,6 @@ dependencies = [
   "ezdxf",
   "multimethod>=1.7,<2.0",
   "nlopt",
-  "nptyping==2.0.1",
   "typish",
   "casadi",
   "path",
