@@ -158,7 +158,7 @@ def main():
     )
     parser.add_argument(
         "--codec",
-        help="The codec to use when converting the CadQuery output. Must match the name of a codec file in the cqcodecs directory.  Multiple codecs can be specified, separated by the colon (;) character. The number of codecs must match the number of output files (outfile parameter).",
+        help="(REQUIRED) The codec to use when converting the CadQuery output. Must match the name of a codec file in the cqcodecs directory.  Multiple codecs can be specified, separated by the colon (;) character. The number of codecs must match the number of output files (outfile parameter).",
     )
     parser.add_argument(
         "--getparams",
