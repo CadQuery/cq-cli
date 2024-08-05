@@ -330,26 +330,9 @@ def main():
     codec = args.codec
 
     # Handle multiple output files
-    if ";" in codec:
+    if codec != None and ";" in codec:
         codecs = codec.split(";")
         codec = codecs[0]
-
-    # Do the first check to make sure the codecs match the number of output files
-    if (outfiles != None and codecs == None) or (outfiles == None and codecs != None):
-        print(
-            "The number of codecs does not match the number of output files.",
-            file=sys.stderr,
-        )
-        sys.exit(4)
-
-    # Make sure the codecs match the number of output files
-    if outfiles != None and codecs != None:
-        if len(outfiles) != len(codecs):
-            print(
-                "The number of codecs does not match the number of output files.",
-                file=sys.stderr,
-            )
-            sys.exit(4)
 
     # Attempt to auto-detect the codec if the user has not set the option
     if args.outfile != None and args.codec == None:
@@ -359,6 +342,24 @@ def main():
             codec_temp = "cq_codec_" + codec_temp
             if codec_temp in loaded_codecs:
                 codec = codec_temp
+
+    # If there are multiple output files, make sure to set the codecs for all of them
+    if outfiles != None and codecs == None:
+        codecs = []
+        for i in range(len(outfiles)):
+            codec_temp = outfiles[i].split(".")[-1]
+            if codec_temp != None:
+                # Construct the codec module name
+                codec_temp = "cq_codec_" + codec_temp
+
+                if codec_temp in loaded_codecs:
+                    # The codecs array needs just the short name, not the full module name
+                    codecs.append(codec_temp.replace("cq_codec_", ""))
+
+                    # Keep track of the codes that are being actively used
+                    if active_codecs == None:
+                        active_codecs = []
+                    active_codecs.append(loaded_codecs[codec_temp])
 
     # If the user has not supplied a codec, they need to be validating the script
     if (codec == None and args.outfile == None) and (
