@@ -117,6 +117,68 @@ def test_codec_infile_outfile_errfile_arguments():
     assert err_str == "Argument error: infile does not exist."
 
 
+def test_no_codec_parameter():
+    """
+    Tests the CLI's ability to infer the codec from the outfile extension.
+    """
+    test_file = helpers.get_test_file_location("cube.py")
+
+    # Get a temporary output file location
+    temp_dir = tempfile.gettempdir()
+    temp_file = os.path.join(temp_dir, "temp_test_12.step")
+
+    command = [
+        "python",
+        "src/cq_cli/main.py",
+        "--infile",
+        test_file,
+        "--outfile",
+        temp_file,
+    ]
+    out, err, exitcode = helpers.cli_call(command)
+
+    # Read the STEP output back from the outfile
+    with open(temp_file, "r") as file:
+        step_str = file.read()
+
+    assert step_str.startswith("ISO-10303-21;")
+
+
+def test_no_codec_parameter_multiple_infiles():
+    """
+    Tests the CLI's ability to infer the codecs from multiple infile extensions.
+    """
+    test_file = helpers.get_test_file_location("cube.py")
+
+    # Get a temporary output file location
+    temp_dir = tempfile.gettempdir()
+    temp_file_step = os.path.join(temp_dir, "temp_test_13.step")
+    temp_file_stl = os.path.join(temp_dir, "temp_test_13.stl")
+    temp_paths = temp_file_step + ";" + temp_file_stl
+
+    command = [
+        "python",
+        "src/cq_cli/main.py",
+        "--infile",
+        test_file,
+        "--outfile",
+        temp_paths,
+    ]
+    out, err, exitcode = helpers.cli_call(command)
+
+    # Read the STEP output back from the outfile to make sure it has the correct content
+    with open(temp_file_step, "r") as file:
+        step_str = file.read()
+    assert step_str.startswith("ISO-10303-21;")
+
+    # Read the STL output back from the outfile to make sure it has the correct content
+    with open(temp_file_stl, "r") as file:
+        stl_str = file.read()
+    assert stl_str.startswith("solid")
+
+    assert exitcode == 0
+
+
 def test_parameter_file():
     """
     Tests the CLI's ability to load JSON parameters from a file.
@@ -456,3 +518,29 @@ def test_expression_argument():
 
     # cq-cli invocation should fail
     assert exitcode == 200
+
+
+def test_multiple_outfiles():
+    """
+    Tests the CLI with multiple output files specified.
+    """
+    test_file = helpers.get_test_file_location("cube.py")
+
+    # Get a temporary output file location
+    temp_dir = tempfile.gettempdir()
+    temp_file_step = os.path.join(temp_dir, "temp_test_11.step")
+    temp_file_stl = os.path.join(temp_dir, "temp_test_11.stl")
+    temp_paths = temp_file_step + ";" + temp_file_stl
+
+    command = [
+        "python",
+        "src/cq_cli/main.py",
+        "--codec",
+        "step;stl",
+        "--infile",
+        test_file,
+        "--outfile",
+        temp_paths,
+    ]
+    out, err, exitcode = helpers.cli_call(command)
+    assert exitcode == 0
