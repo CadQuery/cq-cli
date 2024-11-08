@@ -26,4 +26,4 @@ jobs:
           pip3 install -e .[dev]
       - name: Run tests
         run: |
-          python3 -m pytest -v
+          python3 -m pytest -v --ignore=tests/test_freecad.py

@@ -20,17 +20,55 @@ import json
 from cq_cli.cqcodecs import loader
 
 
+def handle_freecad_file(file_path, params=None):
+    """
+    Wrapper method that takes care of importing a FreeCAD file and applying parameters to it.
+    """
+    from cadquery_freecad_import_plugin.plugin import import_freecad_part
+
+    # Construct a build result so that the rest of the code can handle it
+    build_result = cq.cqgi.BuildResult()
+
+    # Only apply parameters if there are any
+    if params != None and len(params) > 0:
+        # Assemble the FreeCAD params
+        freecad_params = {}
+        for key in params:
+            freecad_params[key] = {"value": params[key], "units": "mm"}
+
+        # Import the FreeCAD file using the parametric method
+        result = import_freecad_part(file_path, freecad_params)
+        shape_result = cq.cqgi.ShapeResult()
+        shape_result.shape = result
+        build_result.results.append(shape_result)
+        build_result.success = True
+    else:
+        # Import the FreeCAD file without applying parameters
+        result = import_freecad_part(file_path)
+        shape_result = cq.cqgi.ShapeResult()
+        shape_result.shape = result
+        build_result.results.append(shape_result)
+        build_result.success = True
+
+    return build_result
+
+
 def build_and_parse(script_str, params, errfile, expression):
     """
     Uses CQGI to parse and build a script, substituting in parameters if any were supplied.
     """
+
     # We need to do a broad try/catch to let the user know if something higher-level fails
     try:
-        # Do the CQGI handling of the script here and, if successful, pass the build result to the codec
-        if expression != None:
-            script_str += "\nshow_object({expr})".format(expr=expression)
-        cqModel = cqgi.parse(script_str)
-        build_result = cqModel.build(params)
+        # If we have a freecad file, handle it differently
+        if script_str.lower().endswith(".fcstd"):
+            build_result = handle_freecad_file(script_str, params)
+        else:
+            # Do the CQGI handling of the script here and, if successful, pass the build result to the codec
+            if expression != None:
+                script_str += "\nshow_object({expr})".format(expr=expression)
+            cqModel = cqgi.parse(script_str)
+            build_result = cqModel.build(params)
 
         # Handle the case of the build not being successful, otherwise pass the codec the build result
         if not build_result.success:
@@ -81,6 +119,8 @@ def get_script_from_infile(infile, outfile, errfile):
     if infile == None:
         # Grab the string from stdin
         script_str = sys.stdin.read()
+    elif infile.lower().endswith(".fcstd"):
+        script_str = infile
     else:
         with open(infile, "r") as file:
             script_str = file.read()
