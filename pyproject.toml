@@ -26,6 +26,7 @@ dependencies = [
   "typish",
   "casadi",
   "path",
+  "cadquery-freecad-import-plugin @ https://github.com/jmwright/cadquery-freecad-import-plugin.git"
 ]
 
 [project.scripts]
