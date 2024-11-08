@@ -1,4 +1,4 @@
-name: Tests
+name: Test FreeCAD
 
 on: [push, pull_request]
 
