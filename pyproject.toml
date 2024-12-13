@@ -11,21 +11,13 @@ authors = [
 ]
 description = "Command Line Interface for executing CadQuery scripts and converting their output to another format."
 readme = "README.md"
-requires-python = ">=3.8"
+requires-python = ">=3.9"
 classifiers = [
     "Programming Language :: Python :: 3",
     "Operating System :: OS Independent",
 ]
 dependencies = [
   "cadquery @ git+https://github.com/CadQuery/cadquery.git",
-  "cadquery-ocp>=7.7.0a0,<7.8",
-  "ezdxf",
-  "multimethod>=1.7,<2.0",
-  "numpy<2.0.0",
-  "nlopt",
-  "typish",
-  "casadi",
-  "path",
   "cadquery-freecad-import-plugin @ git+https://github.com/jmwright/cadquery-freecad-import-plugin.git"
 ]
 
