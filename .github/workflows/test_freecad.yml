@@ -16,6 +16,7 @@ jobs:
           source /usr/share/miniconda/bin/activate
           conda activate freecad
           python -m pip install --upgrade pip
+          unset CONDA_PREFIX_1
           pip install -e .
           pip install -e .[dev]
           python -m pytest -v tests/test_freecad.py
