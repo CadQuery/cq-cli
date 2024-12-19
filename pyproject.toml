@@ -17,7 +17,7 @@ classifiers = [
     "Operating System :: OS Independent",
 ]
 dependencies = [
-  "cadquery",
+  "cadquery@git+https://github.com/CadQuery/cadquery.git",
   "cadquery_freecad_import_plugin"
 ]
 
