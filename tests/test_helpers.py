@@ -15,11 +15,7 @@ def cli_call(command):
     """
     Makes the operating system process calls to test the CLI properly.
     """
-    proc = subprocess.Popen(
-        command,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
-    )
+    proc = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     out, err = proc.communicate()
     return out, err, proc.returncode
 
