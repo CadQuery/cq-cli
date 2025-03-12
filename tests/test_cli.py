@@ -291,21 +291,20 @@ def test_parameter_analysis():
 
     # Grab the JSON output from cq-cli
     jsn = json.loads(out.decode())
+    params_by_name = helpers.params_list_to_dict(jsn)
 
-    # Check to make sure the first parameter was handled properly
-    assert jsn[0]["type"] == "number"
-    assert jsn[0]["name"] == "width"
-    assert jsn[0]["initial"] == 1
-
-    # Check to make sure the second parameter was handled properly
-    assert jsn[1]["type"] == "string"
-    assert jsn[1]["name"] == "tag_name"
-    assert jsn[1]["initial"] == "cube"
-
-    # Check to make sure the third parameter was handled properly
-    assert jsn[2]["type"] == "boolean"
-    assert jsn[2]["name"] == "centered"
-    assert jsn[2]["initial"] == True
+    # Check to make sure the parameters were handled properly
+    assert params_by_name["width"] == {"name": "width", "type": "number", "initial": 1}
+    assert params_by_name["tag_name"] == {
+        "name": "tag_name",
+        "type": "string",
+        "initial": "cube",
+    }
+    assert params_by_name["centered"] == {
+        "name": "centered",
+        "type": "boolean",
+        "initial": True,
+    }
 
 
 def test_parameter_file_input_output():
@@ -348,10 +347,10 @@ def test_parameter_file_input_output():
     # Modify the parameters file
     with open(temp_file, "r") as file:
         json_str = file.read()
-    json_dict = json.loads(json_str)
-    json_dict[0]["initial"] = 10
+    json_list = json.loads(json_str)
+    json_list[1]["initial"] = 10
     with open(temp_file, "w") as file:
-        file.writelines(json.dumps(json_dict))
+        file.writelines(json.dumps(json_list))
 
     # Run the command with the new parameters
     command3 = [
@@ -414,10 +413,11 @@ def test_params_stl_output():
     # Make sure that the customizer.json file exists and has what we expect in it
     with open(customizer_file_path, "r") as file2:
         json_str = file2.read()
-    json_dict = json.loads(json_str)
-    assert json_dict[0]["initial"] == 1
-    assert json_dict[1]["initial"] == "cube"
-    assert json_dict[2]["initial"] == True
+    json_list = json.loads(json_str)
+    params = helpers.params_list_to_dict(json_list)
+    assert params["width"]["initial"] == 1
+    assert params["tag_name"]["initial"] == "cube"
+    assert params["centered"]["initial"] == True
 
     # Write an STL using the default parameters so that we can compare it to what was generated with customized parameters
     command = [
