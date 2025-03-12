@@ -544,3 +544,26 @@ def test_multiple_outfiles():
     ]
     out, err, exitcode = helpers.cli_call(command)
     assert exitcode == 0
+
+def test_file_variable_is_set():
+    """
+    Tests that cq-cli sets the __file__ variable for the model script.
+    """
+    test_file = helpers.get_test_file_location("file_var.py")
+
+    temp_dir = tempfile.gettempdir()
+    out_path = os.path.join(temp_dir, "temp_test_file_variable.stl")
+
+    command = [
+        "python",
+        "src/cq_cli/main.py",
+        "--codec",
+        "stl",
+        "--infile",
+        test_file,
+        "--outfile",
+        out_path,
+    ]
+    out, err, exitcode = helpers.cli_call(command)
+    assert exitcode == 0
+    assert("__file__=" in out.decode())

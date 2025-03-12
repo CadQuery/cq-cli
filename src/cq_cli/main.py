@@ -123,7 +123,11 @@ def get_script_from_infile(infile, outfile, errfile):
         script_str = infile
     else:
         with open(infile, "r") as file:
-            script_str = file.read()
+            # prepend an assignment for the __file__ variable so the model
+            # script knows its path and can potentially load resources relative
+            # to that path.
+            script_str = f"__file__ = '{os.path.abspath(infile)}'\n"
+            script_str += file.read()
 
     return script_str
 
