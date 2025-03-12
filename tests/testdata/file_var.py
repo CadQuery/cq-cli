@@ -1,7 +1,7 @@
 import cadquery as cq
 
 # print info about the __file__ variable to stdout so the test can check it
-if '__file__' in locals():
+if "__file__" in locals():
     print(f"__file__={__file__}")
 else:
     print("__FILE__ not set")
