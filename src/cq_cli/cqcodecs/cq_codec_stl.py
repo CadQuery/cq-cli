@@ -1,13 +1,11 @@
-import os, tempfile
-from cadquery import exporters
-import cadquery as cq
+import os
 import cq_cli.cqcodecs.codec_helpers as helpers
 
 
 def convert(build_result, output_file=None, error_file=None, output_opts=None):
     # Create a temporary file to put the STL output into
-    temp_dir = tempfile.gettempdir()
-    temp_file = os.path.join(temp_dir, "temp_stl.stl")
+    temp_dir = helpers.temp_dir()
+    temp_file = os.path.join(temp_dir.path, "temp_stl.stl")
 
     linearDeflection = 0.1
     angularDeflection = 0.1
