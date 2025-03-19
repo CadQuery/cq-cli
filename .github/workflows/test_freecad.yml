@@ -19,4 +19,5 @@ jobs:
           unset CONDA_PREFIX_1
           pip install -e .
           pip install -e .[dev]
+          pip install pytest-xvfb
           python -m pytest -v tests/test_freecad.py
