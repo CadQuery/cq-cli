@@ -11,12 +11,13 @@ jobs:
 
       - name: Install and Test
         run: |
-          conda create -y -n freecad -c conda-forge python=3.11 freecad=0.21.2
+          conda create -y -n freecad -c conda-forge python=3.11 freecad=0.21.2 cadquery
           conda init bash
           source /usr/share/miniconda/bin/activate
           conda activate freecad
           python -m pip install --upgrade pip
-          unset CONDA_PREFIX_1
-          pip install -e .
+          pip install -e . --no-deps
+          pip install cadquery_freecad_import_plugin
           pip install -e .[dev]
+          pip install pytest-xvfb
           python -m pytest -v tests/test_freecad.py

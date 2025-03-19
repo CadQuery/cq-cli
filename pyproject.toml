@@ -3,7 +3,7 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "cq_cli"
+name = "cadquery-cli"
 version = "2.3.0"
 license = {file = "LICENSE"}
 authors = [
@@ -17,7 +17,7 @@ classifiers = [
     "Operating System :: OS Independent",
 ]
 dependencies = [
-  "cadquery@git+https://github.com/CadQuery/cadquery.git",
+  "cadquery",
   "cadquery_freecad_import_plugin"
 ]
 
