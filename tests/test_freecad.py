@@ -16,8 +16,7 @@ def test_static_freecad_file():
         test_file,
     ]
     out, err, exitcode = helpers.cli_call(command)
-    print(err)
-    print(exitcode)
+
     assert "ISO-10303-21;" in out.decode()
 
 
@@ -38,6 +37,5 @@ def test_parametric_freecad_file():
         test_file,
     ]
     out, err, exitcode = helpers.cli_call(command)
-    print(err)
-    print(exitcode)
+
     assert "ISO-10303-21;" in out.decode()
