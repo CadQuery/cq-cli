@@ -1,11 +1,11 @@
-import os, tempfile
+import os
 import cq_cli.cqcodecs.codec_helpers as helpers
 
 
 def convert(build_result, output_file=None, error_file=None, output_opts=None):
     # Create a temporary file to put the STL output into
-    temp_dir = tempfile.gettempdir()
-    temp_file = os.path.join(temp_dir, "temp_gltf.gltf")
+    temp_dir = helpers.temp_dir()
+    temp_file = os.path.join(temp_dir.path, "temp_gltf.gltf")
 
     # The exporters will add extra output that we do not want, so suppress it
     with helpers.suppress_stdout_stderr():
