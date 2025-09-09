@@ -16,7 +16,7 @@ setup(
     packages=find_packages(where="src"),
     package_dir={"": "src"},
     install_requires=[
-        "cadquery @ git+https://github.com/CadQuery/cadquery.git",
+        "cadquery==2.4.0",
         "cadquery_freecad_import_plugin",
     ],
     extras_require={
