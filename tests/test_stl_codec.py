@@ -1,4 +1,5 @@
 import os
+import sys
 import tests.test_helpers as helpers
 
 
@@ -9,7 +10,7 @@ def test_stl_codec():
     test_file = helpers.get_test_file_location("cube.py")
 
     command = [
-        "python",
+        sys.executable,
         "src/cq_cli/main.py",
         "--codec",
         "stl",
@@ -28,7 +29,7 @@ def test_stl_codec_quality():
     test_file = helpers.get_test_file_location("sphere.py")
 
     command = [
-        "python",
+        sys.executable,
         "src/cq_cli/main.py",
         "--codec",
         "stl",
@@ -42,7 +43,7 @@ def test_stl_codec_quality():
 
     # Attempt to adjust the quality of the resulting STL
     command2 = [
-        "python",
+        sys.executable,
         "src/cq_cli/main.py",
         "--codec",
         "stl",
@@ -66,7 +67,7 @@ def test_stl_codec_with_assembly():
     test_file = helpers.get_test_file_location("cube_assy.py")
 
     command = [
-        "python",
+        sys.executable,
         "src/cq_cli/main.py",
         "--codec",
         "stl",

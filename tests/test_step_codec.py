@@ -1,3 +1,4 @@
+import sys
 import tests.test_helpers as helpers
 
 
@@ -8,7 +9,7 @@ def test_step_codec():
     test_file = helpers.get_test_file_location("cube.py")
 
     command = [
-        "python",
+        sys.executable,
         "src/cq_cli/main.py",
         "--codec",
         "step",

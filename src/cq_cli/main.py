@@ -426,6 +426,13 @@ def main():
         if codec in key:
             codec_module = loaded_codecs[key]
 
+    # If codec_module is still None, the user specified an invalid codec name
+    if codec_module is None:
+        print("Please specify a valid codec. You have the following to choose from:")
+        for key in loaded_codecs:
+            print(key.replace("cq_codec_", ""))
+        sys.exit(3)
+
     # Handle there being multiple codecs
     if codecs != None:
         for cur_codec in codecs:

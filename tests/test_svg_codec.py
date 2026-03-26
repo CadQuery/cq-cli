@@ -1,3 +1,4 @@
+import sys
 import tests.test_helpers as helpers
 
 
@@ -8,7 +9,7 @@ def test_svg_codec():
     test_file = helpers.get_test_file_location("cube.py")
 
     command = [
-        "python",
+        sys.executable,
         "src/cq_cli/main.py",
         "--codec",
         "svg",
@@ -32,7 +33,7 @@ def test_svg_codec_with_assembly():
     test_file = helpers.get_test_file_location("cube_assy.py")
 
     command = [
-        "python",
+        sys.executable,
         "src/cq_cli/main.py",
         "--codec",
         "svg",
