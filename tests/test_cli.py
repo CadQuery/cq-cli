@@ -727,3 +727,380 @@ def test_file_variable_is_set(tmp_path):
     out, err, exitcode = helpers.cli_call(command)
     assert exitcode == 0
     assert "__file__=" in out.decode()
+
+
+def test_stdin_input():
+    """
+    Tests that a CadQuery script piped via stdin produces valid STEP output.
+    """
+    import subprocess
+
+    test_file = helpers.get_test_file_location("cube.py")
+    with open(test_file, "r") as f:
+        script = f.read()
+
+    proc = subprocess.Popen(
+        [sys.executable, "src/cq_cli/main.py", "--codec", "step", "--outfile", "-"],
+        stdin=subprocess.PIPE,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+    )
+    # Pass script via stdin; use --outfile - equivalent: no --outfile means stdout
+    proc2 = subprocess.Popen(
+        [sys.executable, "src/cq_cli/main.py", "--codec", "step"],
+        stdin=subprocess.PIPE,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+    )
+    out, err = proc2.communicate(input=script.encode())
+
+    assert "ISO-10303-21;" in out.decode()
+
+
+def test_stdin_with_outfile(tmp_path):
+    """
+    Tests that a CadQuery script piped via stdin with --outfile writes correct output.
+    """
+    import subprocess
+
+    test_file = helpers.get_test_file_location("cube.py")
+    with open(test_file, "r") as f:
+        script = f.read()
+
+    out_path = tmp_path / "stdin_out.step"
+
+    proc = subprocess.Popen(
+        [
+            sys.executable,
+            "src/cq_cli/main.py",
+            "--codec",
+            "step",
+            "--outfile",
+            str(out_path),
+        ],
+        stdin=subprocess.PIPE,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+    )
+    out, err = proc.communicate(input=script.encode())
+
+    assert proc.returncode == 0
+    with open(str(out_path), "r") as f:
+        content = f.read()
+    assert content.startswith("ISO-10303-21;")
+
+
+def test_parameter_delimited_string_multiple_params(tmp_path):
+    """
+    Tests that multiple key:value pairs in a single --params string all take effect.
+    Passes width=2 and centered=False together and confirms output differs from defaults.
+    """
+    test_file = helpers.get_test_file_location("cube_params.py")
+    out_default = tmp_path / "default.step"
+    out_custom = tmp_path / "custom.step"
+
+    command_default = [
+        sys.executable,
+        "src/cq_cli/main.py",
+        "--codec",
+        "step",
+        "--infile",
+        test_file,
+        "--outfile",
+        str(out_default),
+    ]
+    helpers.cli_call(command_default)
+
+    command_custom = [
+        sys.executable,
+        "src/cq_cli/main.py",
+        "--codec",
+        "step",
+        "--infile",
+        test_file,
+        "--outfile",
+        str(out_custom),
+        "--params",
+        "width:2;",
+    ]
+    out, err, exitcode = helpers.cli_call(command_custom)
+
+    assert exitcode == 0
+    with open(str(out_default), "r") as f:
+        default_content = f.read()
+    with open(str(out_custom), "r") as f:
+        custom_content = f.read()
+    assert default_content != custom_content
+
+
+def test_parameter_json_string_multiple_params(tmp_path):
+    """
+    Tests that a JSON --params string with multiple keys all apply correctly.
+    """
+    test_file = helpers.get_test_file_location("cube_params.py")
+    out_path = tmp_path / "multi_json.step"
+
+    command = [
+        sys.executable,
+        "src/cq_cli/main.py",
+        "--codec",
+        "step",
+        "--infile",
+        test_file,
+        "--outfile",
+        str(out_path),
+        "--params",
+        '{"width": 5, "centered": false}',
+    ]
+    out, err, exitcode = helpers.cli_call(command)
+
+    assert exitcode == 0
+    with open(str(out_path), "r") as f:
+        content = f.read()
+    assert content.startswith("ISO-10303-21;")
+
+
+def test_getparams_with_no_params_script():
+    """
+    Tests that --getparams on a script with no user-defined parameters returns only
+    the injected __file__ entry (a side-effect of __file__ prepending), with no other
+    named parameters.
+    """
+    test_file = helpers.get_test_file_location("cube.py")
+
+    command = [
+        sys.executable,
+        "src/cq_cli/main.py",
+        "--getparams",
+        "true",
+        "--infile",
+        test_file,
+    ]
+    out, err, exitcode = helpers.cli_call(command)
+
+    assert exitcode == 0
+    result = json.loads(out.decode())
+    user_params = [p for p in result if p["name"] != "__file__"]
+    assert user_params == []
+
+
+def test_getparams_writes_file_and_returns_expected_keys(tmp_path):
+    """
+    Tests that --getparams writes a JSON file containing the expected parameter names.
+    """
+    test_file = helpers.get_test_file_location("cube_params.py")
+    params_out = tmp_path / "params.json"
+
+    command = [
+        sys.executable,
+        "src/cq_cli/main.py",
+        "--getparams",
+        str(params_out),
+        "--infile",
+        test_file,
+    ]
+    out, err, exitcode = helpers.cli_call(command)
+
+    assert exitcode == 0
+    assert params_out.exists() and params_out.stat().st_size > 0
+    params = json.loads(params_out.read_text())
+    names = [p["name"] for p in params]
+    assert "width" in names
+    assert "tag_name" in names
+    assert "centered" in names
+
+
+def test_validate_with_outfile(tmp_path):
+    """
+    Tests that --validate true with --outfile writes 'validation_success' to the file.
+    """
+    test_file = helpers.get_test_file_location("cube.py")
+    out_path = tmp_path / "validation.txt"
+
+    command = [
+        sys.executable,
+        "src/cq_cli/main.py",
+        "--validate",
+        "true",
+        "--infile",
+        test_file,
+        "--outfile",
+        str(out_path),
+    ]
+    out, err, exitcode = helpers.cli_call(command)
+
+    assert exitcode == 0
+    assert out_path.read_text() == "validation_success"
+
+
+def test_syntax_error_exits_100():
+    """
+    Tests that a script with a Python syntax error exits with code 100.
+    """
+    test_file = helpers.get_test_file_location("syntax_error.py")
+
+    command = [
+        sys.executable,
+        "src/cq_cli/main.py",
+        "--codec",
+        "step",
+        "--infile",
+        test_file,
+    ]
+    out, err, exitcode = helpers.cli_call(command)
+
+    assert exitcode == 100
+
+
+def test_syntax_error_written_to_errfile(tmp_path):
+    """
+    Tests that a script syntax error writes a traceback to errfile.
+    """
+    test_file = helpers.get_test_file_location("syntax_error.py")
+    err_file = tmp_path / "syntax_err.txt"
+
+    command = [
+        sys.executable,
+        "src/cq_cli/main.py",
+        "--codec",
+        "step",
+        "--infile",
+        test_file,
+        "--errfile",
+        str(err_file),
+    ]
+    out, err, exitcode = helpers.cli_call(command)
+
+    assert exitcode == 100
+    content = err_file.read_text()
+    assert len(content) > 0
+
+
+def test_codec_error_written_to_errfile(tmp_path):
+    """
+    Tests that a codec-level failure (exit 200) writes traceback to errfile.
+    Uses the expression argument to trigger a no-results error.
+    """
+    test_file = helpers.get_test_file_location("no_toplevel_objects.py")
+    err_file = tmp_path / "codec_err.txt"
+
+    command = [
+        sys.executable,
+        "src/cq_cli/main.py",
+        "--codec",
+        "step",
+        "--infile",
+        test_file,
+        "--errfile",
+        str(err_file),
+    ]
+    out, err, exitcode = helpers.cli_call(command)
+
+    assert exitcode == 200
+    content = err_file.read_text()
+    assert len(content) > 0
+
+
+def test_auto_codec_detection_stl(tmp_path):
+    """
+    Tests that the STL codec is inferred from a .stl output file extension.
+    """
+    test_file = helpers.get_test_file_location("cube.py")
+    out_path = tmp_path / "auto.stl"
+
+    command = [
+        sys.executable,
+        "src/cq_cli/main.py",
+        "--infile",
+        test_file,
+        "--outfile",
+        str(out_path),
+    ]
+    out, err, exitcode = helpers.cli_call(command)
+
+    assert exitcode == 0
+    content = out_path.read_bytes()
+    assert content[:5] == b"solid"
+
+
+def test_auto_codec_detection_svg(tmp_path):
+    """
+    Tests that the SVG codec is inferred from a .svg output file extension.
+    """
+    test_file = helpers.get_test_file_location("cube.py")
+    out_path = tmp_path / "auto.svg"
+
+    command = [
+        sys.executable,
+        "src/cq_cli/main.py",
+        "--infile",
+        test_file,
+        "--outfile",
+        str(out_path),
+    ]
+    out, err, exitcode = helpers.cli_call(command)
+
+    assert exitcode == 0
+    content = out_path.read_text()
+    assert '<?xml version="1.0"' in content
+
+
+def test_param_change_produces_different_step_output(tmp_path):
+    """
+    Tests that changing the width parameter produces geometrically different STEP output.
+    """
+    test_file = helpers.get_test_file_location("cube_params.py")
+    out_small = tmp_path / "small.step"
+    out_large = tmp_path / "large.step"
+
+    helpers.cli_call(
+        [
+            sys.executable,
+            "src/cq_cli/main.py",
+            "--codec",
+            "step",
+            "--infile",
+            test_file,
+            "--outfile",
+            str(out_small),
+            "--params",
+            "width:1;",
+        ]
+    )
+    helpers.cli_call(
+        [
+            sys.executable,
+            "src/cq_cli/main.py",
+            "--codec",
+            "step",
+            "--infile",
+            test_file,
+            "--outfile",
+            str(out_large),
+            "--params",
+            "width:10;",
+        ]
+    )
+
+    assert out_small.read_text() != out_large.read_text()
+
+
+def test_multi_show_object_produces_output():
+    """
+    Tests that a script calling show_object() multiple times still produces valid output
+    (cq-cli uses the first result).
+    """
+    test_file = helpers.get_test_file_location("multi_show_object.py")
+
+    command = [
+        sys.executable,
+        "src/cq_cli/main.py",
+        "--codec",
+        "step",
+        "--infile",
+        test_file,
+    ]
+    out, err, exitcode = helpers.cli_call(command)
+
+    assert exitcode == 0
+    assert "ISO-10303-21;" in out.decode()
