@@ -1,16 +1,16 @@
 # cq-cli
 
-[![tests](https://github.com/CadQuery/cq-cli/actions/workflows/tests.yml/badge.svg)](https://github.com/CadQuery/cq-cli/actions)
+[![tests](/actions/workflows/tests.yml/badge.svg)](/actions)
 
 ## Contents
 
-* [Introduction](https://github.com/CadQuery/cq-cli#introduction)
-* [Getting Help](https://github.com/CadQuery/cq-cli#getting_help)
-* [Installation](https://github.com/CadQuery/cq-cli#installation)
-* [Usage](https://github.com/CadQuery/cq-cli#usage)
-* [Examples](https://github.com/CadQuery/cq-cli#examples)
-* [Drawbacks](https://github.com/CadQuery/cq-cli#drawbacks)
-* [Contributing](https://github.com/CadQuery/cq-cli#contributing)
+* [Introduction](#introduction)
+* [Getting Help](#getting_help)
+* [Installation](#installation)
+* [Usage](#usage)
+* [Examples](#examples)
+* [Drawbacks](#drawbacks)
+* [Contributing](#contributing)
 
 ## Introduction
 
@@ -35,7 +35,7 @@ These instructions cover installing cq-cli using pip. If you want a stand-alone 
 cq-cli is not available on PyPI, so it must be installed using pip and git. git must be installed for this process to work.
 
 ```
-pip install git+https://github.com/CadQuery/cq-cli.git
+pip install git+.git
 ```
 Once the installation is complete, there will be two different ways to run the cq-cli command line interface.
 
@@ -47,11 +47,26 @@ or
 python -m cq_cli.main --help
 ```
 
+## Installation (uv) - preferred ⭐️
+
+```
+uv venv --python 3.12
+source .venv/bin/activate
+uv sync
+```
+
+**or if your are developing cd-cli**
+```
+uv venv --python 3.12
+source .venv/bin/activate
+uv sync --dev
+```
+
 ## Installation (Stand-Alone)
 
 **Please note:** This method is not recommended now that cq-cli can be installed via pip, but it is still an option if it is not possible to use a Python virtual environment.
 
-Download a binary distribution that is appropriate for your operating system from the [latest PyInstaller workflow run with a green checkmark](https://github.com/CadQuery/cq-cli/actions/workflows/pyinstaller.yml), extract the zip file, and make sure to put the cq-cli binary in the PATH. Then the CLI can be invoked as `cq-cli` (`cq-cli.exe` on Windows).
+Download a binary distribution that is appropriate for your operating system from the [latest PyInstaller workflow run with a green checkmark](/actions/workflows/pyinstaller.yml), extract the zip file, and make sure to put the cq-cli binary in the PATH. Then the CLI can be invoked as `cq-cli` (`cq-cli.exe` on Windows).
 
 If installing on Windows, the [latest redistributable for Visual Studio](https://support.microsoft.com/en-us/help/2977003/the-latest-supported-visual-c-downloads) will need to be installed.
 
@@ -137,7 +152,7 @@ cq-cli --codec stl --outfile test.stl --infile /input/path/script.py --outputopt
 If you want to help improve and expand cq-cli, the following steps should get you up and running with a development setup. There is a  [CadQuery Discord channel](https://discord.gg/qz3uAdF) and a [Google Group](https://groups.google.com/g/cadquery) that you can join to ask for help getting started.
 
 1. Create a Python virtual environment and activate it. Attept to avoid the bleeding-edge version of Python as there may be problems.
-2. Clone this repository: `git clone https://github.com/CadQuery/cq-cli.git`
+2. Clone this repository: `git clone .git`
 3. cd into the repository directory: `cd cq-cli`
 4. Do a local editable installation via pip: `pip install -e .`
 

@@ -460,7 +460,7 @@ def main():
             or args.params.startswith(".")
             or args.params.startswith("..")
             or args.params.startswith("~")
-            or args.params[1] == ":"
+            or (len(args.params) >= 2 and args.params[1] == ":")
         ):
             # Load the parameters dictionary from the file
             file_params = get_params_from_file(args.params, errfile)
@@ -506,7 +506,7 @@ def main():
                 elif "." in op1:
                     op = float(opt_parts[1])
                 elif '"' in op1 or "'" in op1:
-                    op = str(opt_parts[1])
+                    op = str(opt_parts[1]).strip("\"'")
                 else:
                     op = int(opt_parts[1])
 
@@ -528,7 +528,7 @@ def main():
             print("build_and_parse error: " + str(err), file=sys.stderr)
         else:
             with open(errfile, "w") as file:
-                file.write(err)
+                file.write(str(err))
         sys.exit(100)
 
     #
@@ -555,7 +555,10 @@ def main():
             if converted != None:
                 # Write the converted output to the appropriate place based on the command line arguments
                 if outfile == None:
-                    print(converted)
+                    if isinstance(converted, (bytes, bytearray)):
+                        sys.stdout.buffer.write(converted)
+                    else:
+                        print(converted)
                 else:
                     if isinstance(converted, str):
                         with open(outfile, "w") as file:
