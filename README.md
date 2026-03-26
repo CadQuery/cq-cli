@@ -5,93 +5,84 @@
 ## Contents
 
 * [Introduction](#introduction)
-* [Getting Help](#getting_help)
+* [Getting Help](#getting-help)
 * [Installation](#installation)
 * [Usage](#usage)
 * [Examples](#examples)
-* [Drawbacks](#drawbacks)
 * [Contributing](#contributing)
 
 ## Introduction
 
-***Please Note*** cq-cli is in beta.
+***Please Note:*** cq-cli is in beta.
 
-cq-cli is a Command Line Interface for executing CadQuery scripts and converting their output to another format. It uses a plugin system where "codecs" can be placed in the cqcodecs directory and will be automatically loaded and used if a user selects that codec from the command line.
+cq-cli is a Command Line Interface for executing CadQuery scripts and converting their output to another format. It uses a plugin system where "codecs" can be placed in the `cqcodecs` directory and will be automatically loaded and used if a user selects that codec from the command line.
 
-It is possible to specify input and output files using arguments, but cq-cli also allows the use to the stdin, stdout and stderr streams so that it can be used in a pipeline.
+Input and output files can be specified via arguments, but cq-cli also supports stdin, stdout, and stderr streams so that it can be used in a pipeline.
 
-Linux, MacOS and Windows are supported, but some features may be used differently or may not work the same in Windows.
+**Requires Python 3.11 or later.** Linux, macOS, and Windows are supported, though some features may behave differently on Windows.
 
 ## Getting Help
 
-In addition to opening an issue on this repo, there is a [CadQuery Discord channel](https://discord.gg/qz3uAdF) and a [Google Group](https://groups.google.com/g/cadquery) that you can join to ask for help getting started with cq-cli.
+In addition to opening an issue on this repo, there is a [CadQuery Discord channel](https://discord.gg/qz3uAdF) and a [Google Group](https://groups.google.com/g/cadquery) where you can ask for help getting started with cq-cli.
 
-## Installation (pip)
+## Installation
 
-***Note:*** It probably goes without saying, but it is best to use a Python virtual environment when installing a Python package like cq-cli.
+### uv (preferred) ⭐️
 
-These instructions cover installing cq-cli using pip. If you want a stand-alone installation that does not require any of the Python infrastructure, read the Stand-Alone section below.
-
-cq-cli is not available on PyPI, so it must be installed using pip and git. git must be installed for this process to work.
+[uv](https://docs.astral.sh/uv/) is the recommended way to install and run cq-cli. It handles Python version management and virtual environments automatically.
 
 ```
-pip install git+.git
+uv venv --python 3.11
+source .venv/bin/activate  # Windows: .venv\Scripts\activate
+uv sync
 ```
-Once the installation is complete, there will be two different ways to run the cq-cli command line interface.
 
+Once complete, run cq-cli with:
 ```
 cq-cli --help
 ```
-or
+
+### pip
+
+It is strongly recommended to use a Python virtual environment when installing via pip.
+
+cq-cli is not available on PyPI, so it must be installed from source using pip and git. git must be installed for this to work.
+
+```
+pip install git+https://github.com/CadQuery/cq-cli.git
+```
+
+Once the installation is complete, the CLI can be invoked as:
+```
+cq-cli --help
+```
+or:
 ```
 python -m cq_cli.main --help
 ```
 
-## Installation (uv) - preferred ⭐️
-
-```
-uv venv --python 3.12
-source .venv/bin/activate
-uv sync
-```
-
-**or if your are developing cd-cli**
-```
-uv venv --python 3.12
-source .venv/bin/activate
-uv sync --dev
-```
-
-## Installation (Stand-Alone)
-
-**Please note:** This method is not recommended now that cq-cli can be installed via pip, but it is still an option if it is not possible to use a Python virtual environment.
-
-Download a binary distribution that is appropriate for your operating system from the [latest PyInstaller workflow run with a green checkmark](/actions/workflows/pyinstaller.yml), extract the zip file, and make sure to put the cq-cli binary in the PATH. Then the CLI can be invoked as `cq-cli` (`cq-cli.exe` on Windows).
-
-If installing on Windows, the [latest redistributable for Visual Studio](https://support.microsoft.com/en-us/help/2977003/the-latest-supported-visual-c-downloads) will need to be installed.
-
-
-## Drawbacks of Stand-Alone Installation
-
-* The file (and directory) size for cq-cli is very large. cq-cli uses pyinstaller to package the binaries for each platform, and must embed all needed dependencies. The OCP and OCCT library dependencies add a minimum of ~270 MB of data on top of the included Python distribution. It is possible that the pyinstaller spec file could be optimized. If you are interested in helping with this, please let us know by opening an issue.
-* Startup times for the single binary are relatively slow. If startup and execution time is important to you, consider using the pyinstaller_dir.spec spec file with pyinstaller: `pyinstaller pyinstaller_dir.spec`.
-
 ## Usage
 
-usage: cq-cli.py [-h] [--codec CODEC] [--infile INFILE] [--outfile OUTFILE] [--errfile ERRFILE] [--params PARAMS] [--outputopts OPTS] [--validate VALIDATE]
+```
+cq-cli [-h] [--codec CODEC] [--infile INFILE] [--outfile OUTFILE]
+       [--errfile ERRFILE] [--params PARAMS] [--outputopts OPTS]
+       [--getparams GETPARAMS] [--validate VALIDATE] [--expression EXPRESSION]
+```
 
-Command line utility for converting CadQuery script output to various other output formats.
+Command line utility for converting CadQuery script output to various output formats.
 
-optional arguments:
-* `-h`, `--help` Show this help message and exit
-* `--codec` CODEC The codec to use when converting the CadQuery output. Must match the name of a codec file in the cqcodecs directory.
-* `--getparams` GETPARAMS 
-* `--infile` INFILE The input CadQuery script to convert.
-* `--outfile` OUTFILE File to write the converted CadQuery output to. Prints to stdout if not specified.
-* `--errfile` ERRFILE File to write any errors to. Prints to stderr if not specified.
-* `--params` PARAMS A colon and semicolon delimited string (no spaces) of key/value pairs representing variables and their values in the CadQuery script. i.e. var1:10.0;var2:4.0;
-* `--outputopts` OPTS A colon and semicolon delimited string (no spaces) of key/value pairs representing options to pass to the selected codec.  i.e. width:100;height:200;
-* `--validate` VALIDATE Setting to true forces the CLI to only parse and validate the script and not produce converted output.
+| Argument | Description |
+|---|---|
+| `-h`, `--help` | Show help message and exit |
+| `--codec CODEC` | The codec to use for conversion (e.g. `step`, `stl`, `svg`, `dxf`, `glb`, `gltf`, `threejs`). Can be omitted if `--outfile` has a recognised extension. Multiple codecs can be specified separated by `;` — must match the number of `--outfile` entries. |
+| `--infile INFILE` | The input CadQuery script (`.py`) or FreeCAD file (`.fcstd`). Reads from stdin if omitted. |
+| `--outfile OUTFILE` | File to write the converted output to. Prints to stdout if omitted. Multiple output files can be specified separated by `;`. |
+| `--errfile ERRFILE` | File to write errors to. Prints to stderr if omitted. |
+| `--params PARAMS` | Parameters to pass to the script. Accepts: a JSON file path, a JSON string (`{"width":10}`), or a colon/semicolon delimited string (`width:10;height:5;`). |
+| `--outputopts OPTS` | Codec-specific options as a colon/semicolon delimited string. e.g. `width:100;height:200;` |
+| `--getparams GETPARAMS` | Analyse the script and write parameter metadata as JSON. Pass a file path to write to a file, or `true` to print to stdout. |
+| `--validate VALIDATE` | Set to `true` to validate the script without producing output. |
+| `--expression EXPRESSION` | A Python expression to evaluate and render (e.g. `my_shape(x=5)`). Useful for rendering a specific part from a file that contains multiple functions. |
 
 ## Examples
 
@@ -113,89 +104,95 @@ cq-cli --codec step --infile /input/path/script.py --outfile /output/path/newfil
 ```
 5. Convert a CadQuery script and write any errors to a separate file.
 ```
-cq-cli --codec step --infile /input/path/script.py -errfile /error/path/error.txt
+cq-cli --codec step --infile /input/path/script.py --errfile /error/path/error.txt
 ```
-6. Convert a CadQuery script using the stdin and stdout streams. This example counts the lines in the resulting STEP output as a trivial example.
+6. Convert a CadQuery script using stdin and stdout streams. This example counts the lines in the resulting STEP output.
 ```
-cat /input/path/script.py | cq-cli.py --codec step | wc -l
+cat /input/path/script.py | cq-cli --codec step | wc -l
 ```
-7. Convert a CadQuery script to SVG, passing in output options to influence the resulting image.
+7. Let cq-cli infer the codec from the output file extension.
+```
+cq-cli --infile /input/path/script.py --outfile /output/path/newfile.stl
+```
+8. Convert to multiple output formats in a single invocation.
+```
+cq-cli --infile /input/path/script.py --outfile /output/path/model.step;/output/path/model.stl
+```
+9. Convert a CadQuery script to SVG, passing output options to influence the resulting image.
 ```
 cq-cli --codec svg --infile /input/path/script.py --outfile /output/path/newfile.svg --outputopts "width:100;height:100;marginLeft:12;marginTop:12;showAxes:False;projectionDir:(0.5,0.5,0.5);strokeWidth:0.25;strokeColor:(255,0,0);hiddenColor:(0,0,255);showHidden:True;"
 ```
-8. Convert a CadQuery script to STL, passing in output options to change the quality of the resulting STL. Explanation of linear vs angular deflection can be found [here](https://dev.opencascade.org/doc/occt-7.1.0/overview/html/occt_user_guides__modeling_algos.html#occt_modalg_11_2).
+10. Convert a CadQuery script to STL, adjusting mesh quality. Explanation of linear vs angular deflection can be found [here](https://dev.opencascade.org/doc/occt-7.1.0/overview/html/occt_user_guides__modeling_algos.html#occt_modalg_11_2).
 ```
 cq-cli --codec stl --infile /input/path/script.py --outfile /output/path/script.stl --outputopts "linearDeflection:0.3;angularDeflection:0.3"
 ```
-9. Extract parameter information from the input script. The outfile argument can also be left off to output the parameter JSON to stdout.
+11. Extract parameter information from a script. Omit the file path to print JSON to stdout.
 ```
 cq-cli --getparams /output/path/params.json --infile /input/path/script.py
 ```
-10. Pass JSON parameter information from a file to be used in the script.
+12. Pass JSON parameter information from a file to the script.
 ```
 cq-cli --codec stl --infile /input/path/script.py --outfile /output/path/output.stl --params /parameter/path/parameters.json
 ```
-11. Pass JSON parameter data as a string on the command line.
+13. Pass JSON parameter data as a string on the command line.
 ```
 cq-cli --codec stl --infile /input/path/script.py --params "{\"width\":10}"
 ```
-12. String parameters can be defined using single quotes (`'`) or escaped double quotes (`\"`).
+14. Pass parameters as a colon/semicolon delimited string.
 ```
-cq-cli --codec stl --outfile test.stl --infile /input/path/script.py --outputopts "width:2;tag_name:'test';centered:True"
+cq-cli --codec stl --infile /input/path/script.py --outfile test.stl --params "width:2;centered:True"
 ```
+15. Render a specific function from a file using `--expression`.
 ```
-cq-cli --codec stl --outfile test.stl --infile /input/path/script.py --outputopts "width:2;tag_name:\"test\";centered:True"
+cq-cli --codec step --infile /input/path/script.py --outfile /output/path/part.step --expression "my_part(x=5)"
 ```
 
 ## Contributing
 
-If you want to help improve and expand cq-cli, the following steps should get you up and running with a development setup. There is a  [CadQuery Discord channel](https://discord.gg/qz3uAdF) and a [Google Group](https://groups.google.com/g/cadquery) that you can join to ask for help getting started.
+### Development Setup
 
-1. Create a Python virtual environment and activate it. Attept to avoid the bleeding-edge version of Python as there may be problems.
-2. Clone this repository: `git clone .git`
-3. cd into the repository directory: `cd cq-cli`
-4. Do a local editable installation via pip: `pip install -e .`
+The recommended way to set up a development environment is with [uv](https://docs.astral.sh/uv/).
+
+```
+git clone https://github.com/CadQuery/cq-cli.git
+cd cq-cli
+uv venv --python 3.11
+source .venv/bin/activate  # Windows: .venv\Scripts\activate
+uv sync --extra dev
+```
+
+Alternatively, using pip:
+```
+git clone https://github.com/CadQuery/cq-cli.git
+cd cq-cli
+python -m venv .venv
+source .venv/bin/activate  # Windows: .venv\Scripts\activate
+pip install -e .[dev]
+```
+
+Run the test suite:
+```
+pytest -v --ignore=tests/test_freecad.py
+```
 
 ### Adding a Codec
 
-The codec plugin system is based on naming conventions so that cq-cli knows what codec options to accept from the user. When adding a codec, make sure to place it in the `cqcodecs` directory and follow the naming convention `cq_codec_[your codec name].py`. The `your codec name` part of the filename will automatically be used as the codec name that the user specifies.
+The codec plugin system is based on naming conventions so that cq-cli knows what codec options to accept from the user. When adding a codec, place it in the `cqcodecs` directory and follow the naming convention `cq_codec_[your codec name].py`. The `your codec name` part of the filename will automatically be used as the codec name specified by the user.
 
-A good example to start with when creating your own codec would be `cqcodecs/cq_codec_step.py` as it shows a simple implementation of the codec that relies on CadQuery to do all the heavy lifting. At the very least, your codec needs to have a `convert` function that takes in a [CQGI BuildResult object](https://cadquery.readthedocs.io/en/latest/cqgi.html#cadquery.cqgi.BuildResult) and returns a string representing the converted model(s). As an alternative, cq-cli will pass the output file name, which makes it possible to write the output to the outfile path directly from the codec. If `None` is returned from the `convert` function, cq-cli will assume that the output was written directly to the output file by the codec.
-
-For pyinstaller to know about the new dynamically loaded codec, it must be added to the `hiddenimports` array in both cq-cli_onfile_pyinstaller.spec and cq-cli_dir_pyinstaller.spec files. Leave the `.py` off of the name when adding to the array, for instance `codec.cq_codec_step` is the string used for the STEP codec. When only running a codec locally and not contributing it, this step is not required.
+A good starting point is [cqcodecs/cq_codec_step.py](src/cq_cli/cqcodecs/cq_codec_step.py), which shows a simple codec implementation that relies on CadQuery to do the heavy lifting. At minimum, your codec needs a `convert` function that accepts a [CQGI BuildResult object](https://cadquery.readthedocs.io/en/latest/cqgi.html#cadquery.cqgi.BuildResult) and returns a string or bytes representing the converted model. If the codec writes the output file directly, return `None` and cq-cli will assume the output was written to disk.
 
 ### Adding a Codec Test
 
-A test is required when adding a codec to cq-cli, but is easy to add. Add a file named `test_[your codec name]_codec.py` in the tests directory, and add the test to it. `test_step_codec.py` would be a good template to base any new tests off of.
+A test is required when adding a codec to cq-cli. Add a file named `test_[your codec name]_codec.py` in the `tests` directory. [tests/test_step_codec.py](tests/test_step_codec.py) is a good template.
 
 ### Exit Codes
 
-Applications can return a non-zero exit code to let the user know what went wrong. Below is a listing of the exit codes for cq-cli and what they mean.
+| Code | Meaning |
+|---|---|
+| **0** | Operation completed successfully. |
+| **1** | The CadQuery script could not be read from `--infile`. |
+| **2** | Usage error — incorrect or insufficient arguments. |
+| **3** | No valid codec was provided or could be inferred. |
+| **100** | Error while running the CadQuery script (build error, possibly from OCCT). |
+| **200** | Error while running the conversion codec. |
 
-* **0:** Operation was successful with no errors detected.
-* **1:** A CadQuery script could not be read from the given `infile`.
-* **2:** There was a usage error with the parameters that were passed to cq-cli (too few parameters, not the correct ones, etc).
-* **3:** A codec for converting the results of the CadQuery script was not provided.
-* **100:** There was an unknown error while running the CadQuery script and obtaining a result (build error, possibly from OCCT).
-* **200:** There was an unknown error while running a codec to convert the results of the CadQuery script.
-
-### pyinstaller
-
-If building cq-cli to run as a stand-alone app is required, there are two modes to build it in: `onefile` and `dir` (directory). onefile mode creates a single file for the app, which is easy to distribute but takes longer to start up run on each execution. dir mode creates a directory with numerous dependency files in it, including the cq-cli binary file, and starts up faster than the single file. However, the directory distribution can take up more than twice the disk space and can be messier to distribute. A PyInstaller spec file has been provided for both modes, and selecting between them only requires the addition of a command line argument. The commands to build in each type of mode are outlined below.
-
-There are a few packages, including PyInstaller, must be installed via conda or pip before executing either of the `pyinstaller` commands below.
-```
-pip install pyinstaller
-pip install path
-```
-The output for both of the commands will be in the `dist` directory. If the mode argument is left off, `onefile` is assumed.
-
-#### pyinstaller onefile
-```
-pyinstaller cq-cli_pyinstaller.spec onefile
-```
-
-#### pyinstaller directory
-```
-pyinstaller cq-cli_pyinstaller.spec dir
-```
