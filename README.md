@@ -13,17 +13,11 @@
 
 ## Introduction
 
-***Please Note:*** cq-cli is in beta.
-
 cq-cli is a Command Line Interface for executing CadQuery scripts and converting their output to another format. It uses a plugin system where "codecs" can be placed in the `cqcodecs` directory and will be automatically loaded and used if a user selects that codec from the command line.
 
 Input and output files can be specified via arguments, but cq-cli also supports stdin, stdout, and stderr streams so that it can be used in a pipeline.
 
 **Requires Python 3.11 or later.** Linux, macOS, and Windows are supported, though some features may behave differently on Windows.
-
-## Getting Help
-
-In addition to opening an issue on this repo, there is a [CadQuery Discord channel](https://discord.gg/qz3uAdF) and a [Google Group](https://groups.google.com/g/cadquery) where you can ask for help getting started with cq-cli.
 
 ## Installation
 
