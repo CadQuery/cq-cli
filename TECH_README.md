@@ -10,7 +10,7 @@ The project is built around the **CadQuery Gateway Interface (CQGI)**.
 - **FreeCAD Support:** Integrates `cadquery_freecad_import_plugin` to handle `.fcstd` files.
 
 ## Tech Stack
-- **Language:** Python 3.9+
+- **Language:** Python 3.11+
 - **Core Library:** [CadQuery](https://github.com/CadQuery/cadquery)
 - **Environment Management:** `uv` (preferred)
 - **Build Tool:** PyInstaller (for standalone binaries)
@@ -22,7 +22,7 @@ The project is built around the **CadQuery Gateway Interface (CQGI)**.
 - **Install Dependencies:** `uv sync`
 - **Run CLI (Development):** `python -m cq_cli.main --help`
 - **Run Tests:** `pytest`
-- **Linting:** `black` (v19.10b0 specified in `pyproject.toml`)
+- **Linting:** `black==26.3.1`, `click==8.3.1` (dev dependencies in `pyproject.toml`)
 
 ### Usage Examples
 - **Convert to STEP:** `cq-cli --codec step --infile model.py --outfile model.step`
