@@ -190,3 +190,17 @@ A test is required when adding a codec to cq-cli. Add a file named `test_[your c
 | **100** | Error while running the CadQuery script (build error, possibly from OCCT). |
 | **200** | Error while running the conversion codec. |
 
+---
+
+### Github Workflows
+
+This repository has five GitHub Actions workflows in \`.github/workflows\`:
+
+**CI/CD**
+- `lint.yml\`: Runs Black formatting checks (currently on Python 3.13).
+- `tests.yml\`: Runs the main test suite with pytest (currently on Python 3.11).
+- `test\_freecad.yml\`: Runs FreeCAD-specific integration tests in a conda environment.
+
+**Builds per OS - WIP**
+- `pyinstaller.yml\`: Manually triggered PyInstaller builds for Linux, macOS, and Windows.
+- `pyinstaller-builds-actions.yml\`: Alternate/manual conda-based cross-platform PyInstaller build workflow.
