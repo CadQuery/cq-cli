@@ -24,4 +24,4 @@ jobs:
       - name: Run tests
         shell: bash --login {0}
         run: |
-          black --diff --check .
+          black --diff --check --target-version py313 --extend-exclude 'tests/testdata/syntax_error.py' .

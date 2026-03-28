@@ -40,6 +40,7 @@ def test_gltf_codec_is_valid_json():
 
     assert exitcode == 0
     import json
+
     data = json.loads(out.decode())
     assert "accessors" in data
 
@@ -65,6 +66,7 @@ def test_gltf_codec_to_file(tmp_path):
 
     assert exitcode == 0
     import json
+
     data = json.loads(out_path.read_text())
     assert "accessors" in data
 
