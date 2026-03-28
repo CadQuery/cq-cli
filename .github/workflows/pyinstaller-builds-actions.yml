@@ -18,7 +18,7 @@ jobs:
         # miniconda-version: "latest"
         miniforge-version: latest
         auto-update-conda: true
-        python-version: 3.8
+        python-version: 3.11
         activate-environment: test
     - name: Install CadQuery and pyinstaller
       shell: bash --login {0}
@@ -44,7 +44,7 @@ jobs:
       with:
         miniconda-version: "latest"
         auto-update-conda: true
-        python-version: 3.8
+        python-version: 3.11
         activate-environment: test
     - name: Install CadQuery and pyinstaller
       shell: bash --login {0}
@@ -70,7 +70,7 @@ jobs:
       with:
         miniforge-version: latest
         # auto-update-conda: true
-        python-version: 3.8
+        python-version: 3.11
         activate-environment: test
     - name: Install CadQuery and pyinstaller
       shell: pwsh
