@@ -10,8 +10,8 @@ jobs:
   build-linux:
     runs-on: ubuntu-20.04
     steps:
-    - uses: actions/checkout@v4
-    - uses: actions/setup-python@v5
+    - uses: actions/checkout@v6
+    - uses: actions/setup-python@v6
       with:
         python-version: '3.11'
     - name: Install dependencies
@@ -24,15 +24,15 @@ jobs:
     - name: Run PyInstaller build
       run: |
         pyinstaller pyinstaller.spec ${{ github.event.inputs.type }}
-    - uses: actions/upload-artifact@v4
+    - uses: actions/upload-artifact@v7
       with:
         name: cq-cli-Linux-x86_64
         path: dist
   build-macos:
     runs-on: macos-latest
     steps:
-    - uses: actions/checkout@v4
-    - uses: actions/setup-python@v5
+    - uses: actions/checkout@v6
+    - uses: actions/setup-python@v6
       with:
         python-version: '3.11'
     - name: Install dependencies
@@ -45,15 +45,15 @@ jobs:
     - name: Run PyInstaller build
       run: |
         pyinstaller pyinstaller.spec ${{ github.event.inputs.type }}
-    - uses: actions/upload-artifact@v4
+    - uses: actions/upload-artifact@v7
       with:
         name: cq-cli-MacOS
         path: dist
   build-windows:
     runs-on: windows-latest
     steps:
-    - uses: actions/checkout@v4
-    - uses: actions/setup-python@v5
+    - uses: actions/checkout@v6
+    - uses: actions/setup-python@v6
       with:
         python-version: '3.11'
     - name: Install dependencies
@@ -69,7 +69,7 @@ jobs:
         # CPATH=$pythonLocation/include/python${{ matrix.python-version }}m
         # echo "CPATH=$CPATH" >> $GITHUB_ENV
         pyinstaller pyinstaller.spec ${{ github.event.inputs.type }}
-    - uses: actions/upload-artifact@v4
+    - uses: actions/upload-artifact@v7
       with:
         name: cq-cli-Windows
         path: dist
