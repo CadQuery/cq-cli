@@ -11,19 +11,23 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: ["3.10"]
+        python-version: ["3.11"]
         os: [ubuntu-22.04]  # windows-latest , macos-latest
     runs-on: ${{ matrix.os }}
     steps:
       - name: Install Dependencies (Linux)
         run: sudo apt-get update && sudo apt install -y libgl1-mesa-glx
-        if: matrix.os == 'ubuntu-20.04'
-      - uses: actions/checkout@v2
+        if: matrix.os == 'ubuntu-22.04'
+      - uses: actions/checkout@v6
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: ${{ matrix.python-version }}
       - name: Install CadQuery and pytest
         run: |
-          pip3 install --upgrade pip
-          pip3 install -e .
-          pip3 install -e .[dev]
+          python -m pip install --upgrade pip
+          python -m pip install -e .
+          python -m pip install -e .[dev]
       - name: Run tests
         run: |
-          python3 -m pytest -v --ignore=tests/test_freecad.py
+          python -m pytest -v --ignore=tests/test_freecad.py

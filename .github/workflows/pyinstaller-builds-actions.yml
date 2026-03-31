@@ -12,13 +12,13 @@ jobs:
   build-linux:
     runs-on: ubuntu-20.04
     steps:
-    - uses: actions/checkout@v2
-    - uses: conda-incubator/setup-miniconda@v2
+    - uses: actions/checkout@v6
+    - uses: conda-incubator/setup-miniconda@v3
       with:
         # miniconda-version: "latest"
         miniforge-version: latest
         auto-update-conda: true
-        python-version: 3.8
+        python-version: 3.11
         activate-environment: test
     - name: Install CadQuery and pyinstaller
       shell: bash --login {0}
@@ -32,19 +32,19 @@ jobs:
       run: |
         mamba info
         pyinstaller cq-cli_pyinstaller.spec ${{ github.event.inputs.type }}
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v7
       with:
         name: cq-cli-Linux-x86_64
         path: dist
   build-macos:
     runs-on: macos-latest
     steps:
-    - uses: actions/checkout@v2
-    - uses: conda-incubator/setup-miniconda@v2
+    - uses: actions/checkout@v6
+    - uses: conda-incubator/setup-miniconda@v3
       with:
         miniconda-version: "latest"
         auto-update-conda: true
-        python-version: 3.8
+        python-version: 3.11
         activate-environment: test
     - name: Install CadQuery and pyinstaller
       shell: bash --login {0}
@@ -58,19 +58,19 @@ jobs:
       run: |
         conda info
         pyinstaller cq-cli_pyinstaller.spec ${{ github.event.inputs.type }}
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v7
       with:
         name: cq-cli-MacOS
         path: dist
   build-windows:
     runs-on: windows-latest
     steps:
-    - uses: actions/checkout@v2
-    - uses: conda-incubator/setup-miniconda@v2
+    - uses: actions/checkout@v6
+    - uses: conda-incubator/setup-miniconda@v3
       with:
         miniforge-version: latest
         # auto-update-conda: true
-        python-version: 3.8
+        python-version: 3.11
         activate-environment: test
     - name: Install CadQuery and pyinstaller
       shell: pwsh
@@ -86,7 +86,7 @@ jobs:
         Get-ChildItem -Path C:\Miniconda3\envs\test\ -Filter OCP* -Recurse
         mamba info
         pyinstaller cq-cli_pyinstaller.spec ${{ github.event.inputs.type }}
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v7
       with:
         name: cq-cli-Windows
         path: dist

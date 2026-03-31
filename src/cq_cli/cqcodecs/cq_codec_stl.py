@@ -13,9 +13,9 @@ def convert(build_result, output_file=None, error_file=None, output_opts=None):
     angularDeflection = 0.1
 
     # If the user has provided the deflection settings, use them
-    if "linearDeflection" in output_opts:
+    if output_opts and "linearDeflection" in output_opts:
         linearDeflection = output_opts["linearDeflection"]
-    if "angularDeflection" in output_opts:
+    if output_opts and "angularDeflection" in output_opts:
         angularDeflection = output_opts["angularDeflection"]
 
     # The exporters will add extra output that we do not want, so suppress it
@@ -33,7 +33,7 @@ def convert(build_result, output_file=None, error_file=None, output_opts=None):
         result.exportStl(temp_file, linearDeflection, angularDeflection, True)
 
     # Read the STL output back in
-    with open(temp_file, "r") as file:
+    with open(temp_file, "rb") as file:
         stl_str = file.read()
 
     return stl_str

@@ -1,3 +1,4 @@
+import sys
 import tests.test_helpers as helpers
 
 
@@ -8,7 +9,7 @@ def test_static_freecad_file():
     test_file = helpers.get_test_file_location("shelf.FCStd")
 
     command = [
-        "python",
+        sys.executable,
         "src/cq_cli/main.py",
         "--codec",
         "step",
@@ -27,7 +28,7 @@ def test_parametric_freecad_file():
     test_file = helpers.get_test_file_location("shelf.FCStd")
 
     command = [
-        "python",
+        sys.executable,
         "src/cq_cli/main.py",
         "--codec",
         "step",
