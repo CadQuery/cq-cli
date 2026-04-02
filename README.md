@@ -40,7 +40,13 @@ cq-cli --help
 
 It is strongly recommended to use a Python virtual environment when installing via pip.
 
-cq-cli is not available on PyPI, so it must be installed from source using pip and git. git must be installed for this to work.
+To install the latest release from PyPI, use the following command:
+```
+ pip install cadquery-cli
+```
+**Note:** There was a naming collision on PyPI which required the package name to be `cadquery-cli` rather than `cq-cli`. The command name stays the same after installation though.
+
+To install the latest development version instead of the stable release, use the following command:
 
 ```
 pip install git+https://github.com/CadQuery/cq-cli.git
