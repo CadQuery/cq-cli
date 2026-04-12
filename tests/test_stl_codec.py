@@ -164,3 +164,24 @@ def test_stl_codec_assembly_to_file(tmp_path):
     assert exitcode == 0
     content = out_path.read_bytes()
     assert content[:5] == b"solid"
+
+
+def test_stl_codec_binary():
+    """
+    Tests exporting to binary stl format.
+    """
+    test_file = helpers.get_test_file_location("cube.py")
+
+    command = [
+        sys.executable,
+        "src/cq_cli/main.py",
+        "--codec",
+        "stl",
+        "--infile",
+        test_file,
+        "--outputopts",
+        "binary:True",
+    ]
+    out, err, exitcode = helpers.cli_call(command)
+
+    assert out[:5] != b"solid"
