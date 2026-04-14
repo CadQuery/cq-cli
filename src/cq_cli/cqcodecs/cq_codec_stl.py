@@ -18,6 +18,10 @@ def convert(build_result, output_file=None, error_file=None, output_opts=None):
     if output_opts and "angularDeflection" in output_opts:
         angularDeflection = output_opts["angularDeflection"]
 
+    use_ascii = True
+    if output_opts and "binary" in output_opts:
+        use_ascii = not output_opts["binary"]
+
     # The exporters will add extra output that we do not want, so suppress it
     with helpers.suppress_stdout_stderr():
         # There should be a shape in the build results
@@ -30,7 +34,7 @@ def convert(build_result, output_file=None, error_file=None, output_opts=None):
             result = result.val()
 
         # Put the STL output into the temp file
-        result.exportStl(temp_file, linearDeflection, angularDeflection, True)
+        result.exportStl(temp_file, linearDeflection, angularDeflection, use_ascii)
 
     # Read the STL output back in
     with open(temp_file, "rb") as file:
